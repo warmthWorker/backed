@@ -1,5 +1,6 @@
 package org.java.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,5 +17,6 @@ public class InternShipTaskDto {
     private Integer start_week;
     private String requirements;
     private String remarks;
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private LocalDateTime application_deadline;
 }
