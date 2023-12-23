@@ -26,15 +26,16 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
     private ConTaskMapper conTaskMapper;
     @Override
     public boolean addTask(Internshiptask internshiptask){
-        if (mapper.insert(internshiptask) != 0){
+        if (mapper.insert(internshiptask) > 0){
             return true;
         }
         return false;
     }
     @Override
-    public List<Internshiptask> getTasks(){
+    public List<Internshiptask> getTasks(int pageNumber,int pageSize){
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<>());
-        return selectList;
+
+        return getPage(selectList,pageNumber,pageSize);
     }
     @Override
     public Internshiptask getSymbol(String courseCategory,String academicTerm,String className){
@@ -42,6 +43,24 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         QueryWrapper<Internshiptask> queryWrapper = new QueryWrapper<>();
         QueryWrapper<Internshiptask> taskId1 = queryWrapper.eq("task_id", taskId);
         return mapper.selectOne(taskId1);
+    }
+
+    /**
+     * 分页
+     * @param tasks
+     * @param pageNumber 当前页
+     * @param pageSize 每页大小
+     * @return
+     */
+    public static List<Internshiptask> getPage(List<Internshiptask> tasks, int pageNumber, int pageSize) {
+        int fromIndex = pageNumber * pageSize;
+        int toIndex = Math.min((pageNumber + 1) * pageSize, tasks.size());
+
+        if (fromIndex > toIndex || fromIndex >= tasks.size()) {
+            // 页数超出范围，返回空列表或适当处理
+            return List.of();
+        }
+        return tasks.subList(fromIndex, toIndex);
     }
 }
 

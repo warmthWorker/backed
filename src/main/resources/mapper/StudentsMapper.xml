@@ -11,8 +11,5 @@
             <result property="name" column="Name" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        ID,Grade,Class,
-        Name
-    </sql>
+
 </mapper>

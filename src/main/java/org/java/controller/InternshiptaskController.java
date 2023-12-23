@@ -1,14 +1,19 @@
 package org.java.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.java.entity.dto.InternShipTaskDto;
 import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.User;
 import org.java.mapper.ConTaskMapper;
 import org.java.service.InternshiptaskService;
 import org.java.utils.resonse.Result;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/task")
@@ -19,10 +24,12 @@ public class InternshiptaskController {
     @Autowired
     private ConTaskMapper conTaskMapper;
 
-//    @GetMapping("/getInfo")
-//    public Result<Internshiptask> getInfo() {
-//        return internshiptaskService
-//    }
+    @GetMapping("/getTasks")
+    public Result<List<Internshiptask>> getTasks(@RequestParam Map<String ,Integer> map) {
+        Integer pageNumber = map.get("pageNumber");
+        Integer pageSize = map.get("pageSize");
+        return Result.success(internshiptaskService.getTasks(pageNumber,pageSize));
+    }
 
     @GetMapping("/getsymble")
     public Result<Internshiptask> getsymble(String courseCategory,String academicTerm,String className) {
@@ -31,8 +38,11 @@ public class InternshiptaskController {
         return Result.success(internshiptask);
     }
 
-    @PostMapping("/addInfo")
-    public Result addInfo(@RequestBody Internshiptask internshiptask) {
+    @PostMapping("/addTask")
+    public Result addInfo(@RequestBody InternShipTaskDto internShipTaskDto) {
+        Internshiptask internshiptask = new Internshiptask();
+        // 类复制
+        BeanUtils.copyProperties(internshiptask,internShipTaskDto);
         if (internshiptaskService.addTask(internshiptask)){
             return  Result.success();
         }else {

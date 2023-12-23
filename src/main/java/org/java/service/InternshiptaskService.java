@@ -8,7 +8,7 @@ public interface InternshiptaskService {
 
     public boolean addTask(Internshiptask internshiptask);
 
-    public List<Internshiptask> getTasks();
+    public List<Internshiptask> getTasks(int pageNumber,int pageSize);
 
     public Internshiptask getSymbol(String courseCategory,String academicTerm,String className);
 }
