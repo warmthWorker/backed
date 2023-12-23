@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class Course {
     private Integer id;
     private String name;
-    private Integer t_number;
-    private Integer n_number;
+    private Integer tNumber;
+    private Integer nNumber;
     private Integer credit;
     private Integer period;
     private Integer mark;

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConTask {
     private Integer id;
-    private Integer course_id;
+    private Integer courseId;
     private Integer term;
-    private String course_category;
-    private String course_name;
-    private Integer n_task_id;
-    private Integer l_task_id;
+    private String courseCategory;
+    private String courseName;
+    private Integer nTaskId; //本次试验任务id
+    private Integer lTaskId; // 上次试验任务id
 }

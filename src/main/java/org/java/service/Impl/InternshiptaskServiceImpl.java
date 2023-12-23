@@ -2,14 +2,19 @@ package org.java.service.Impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.java.entity.pojo.ConTask;
 import org.java.entity.pojo.Internshiptask;
+import org.java.entity.vo.ApplyTaskVo;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.InternshiptaskMapper;
 import org.java.service.InternshiptaskService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,15 +32,30 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
     @Override
     public boolean addTask(Internshiptask internshiptask){
         if (mapper.insert(internshiptask) > 0){
+
+            ConTask conTask = conTaskMapper.selectOne(new QueryWrapper<ConTask>()
+                    .eq("task_id", internshiptask.getTaskId()));
+            // 比较年份，年份大就替换
+            if (Integer.parseInt(internshiptask.getAcademicTerm())>conTask.getTerm()){
+               conTask.setLTaskId(conTask.getNTaskId());
+               conTask.setNTaskId(Integer.parseInt(internshiptask.getAcademicTerm()));
+            }
+            conTaskMapper.insert(conTask);
             return true;
         }
         return false;
     }
     @Override
-    public List<Internshiptask> getTasks(int pageNumber,int pageSize){
+    public List<ApplyTaskVo> getTasks(int pageNumber,int pageSize){
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<>());
+        List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
 
-        return getPage(selectList,pageNumber,pageSize);
+        for (Internshiptask internshiptask : selectList) {
+            ApplyTaskVo applyTaskVo = new ApplyTaskVo();
+            BeanUtils.copyProperties(applyTaskVo, internshiptask);
+
+        }
+        return getPage(applyTaskVos,pageNumber,pageSize);
     }
     @Override
     public Internshiptask getSymbol(String courseCategory,String academicTerm,String className){
@@ -52,7 +72,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
      * @param pageSize 每页大小
      * @return
      */
-    public static List<Internshiptask> getPage(List<Internshiptask> tasks, int pageNumber, int pageSize) {
+    public static List<ApplyTaskVo> getPage(List<ApplyTaskVo> tasks, int pageNumber, int pageSize) {
         int fromIndex = pageNumber * pageSize;
         int toIndex = Math.min((pageNumber + 1) * pageSize, tasks.size());
 

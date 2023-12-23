@@ -35,6 +35,14 @@ public class SecurityConfig {
                 // 打开 /user
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/bus/v2/api-docs/**",
+                                "/bus/v3/api-docs/**",
+                                "/webjars/**",
+                                "/context-path/swagger-ui.html"
+                                ).permitAll()
                         .anyRequest().authenticated())
 
                 // 关掉cors

@@ -1,18 +1,15 @@
-package org.java.entity.pojo;
+package org.java.entity.vo;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Internshiptask {
+public class ApplyTaskVo {
     private Integer taskId;
     private String academicTerm;
     private String courseCode;
@@ -22,8 +19,5 @@ public class Internshiptask {
     private String className;
     private Integer studentCount;
     private Integer startWeek;
-    private String requirements;
-    private String remarks;
-//    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date applicationDeadline;
 }
