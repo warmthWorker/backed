@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/word?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+
+ai:
+  jwt:
+    secretkey: asd2waw10293uhw92348732894dh2ui12123n123em123wdq234324erw34
+    timeoutDays: 7
+
+server:
+  port: 3000
+
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: org.java.entity.pojo
+    configuration:
+      map-underscore-to-camel-case: true

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.java.mapper.InternshiptaskMapper">
+
+    <resultMap id="BaseResultMap" type="org.java.entity.pojo.Internshiptask">
+            <id property="task_id" column="task_id" jdbcType="INTEGER"/>
+            <result property="academic_term" column="academic_term" jdbcType="VARCHAR"/>
+            <result property="course_code" column="course_code" jdbcType="VARCHAR"/>
+            <result property="course_name" column="course_name" jdbcType="VARCHAR"/>
+            <result property="course_category" column="course_category" jdbcType="VARCHAR"/>
+            <result property="credit_hours" column="credit_hours" jdbcType="INTEGER"/>
+            <result property="class_name" column="class_name" jdbcType="VARCHAR"/>
+            <result property="student_count" column="student_count" jdbcType="INTEGER"/>
+            <result property="start_week" column="start_week" jdbcType="INTEGER"/>
+            <result property="requirements" column="requirements" jdbcType="VARCHAR"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="application_deadline" column="application_deadline" jdbcType="DATE"/>
+    </resultMap>
+
+
+</mapper>
