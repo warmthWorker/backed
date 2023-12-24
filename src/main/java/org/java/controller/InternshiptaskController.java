@@ -47,19 +47,22 @@ public class InternshiptaskController {
 //    @Operation(
 //            summary = "获取所有实训任务",
 //            description = "获取所有实训任务")
-    public Result<List<ApplyTaskVo>> getTasks(@RequestParam Map<String, Integer> map) {
-        Integer pageNumber = map.get("pageNumber");
-        Integer pageSize = map.get("pageSize");
+    public Result<List<ApplyTaskVo>> getTasks(@RequestParam Map<String, String> map) {
+
+        log.info("获取数据：{}",map);
+        Integer pageNumber = Integer.valueOf(map.get("pageNumber"));
+        Integer pageSize = Integer.valueOf(map.get("pageSize"));
         log.info("获取所有实训任务");
         return Result.success(internshiptaskService.getTasks(pageNumber, pageSize));
+//        return null;
     }
 
     @GetMapping("/getTasksByTerm")
-    public Result<List<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, Integer> map) {
+    public Result<List<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, String> map) {
         log.info("获取当前学期所有实习任务",map);
-        Integer pageNumber = map.get("pageNumber");
-        Integer pageSize = map.get("pageSize");
-        Integer academicTerm = map.get("academicTerm");
+        int pageNumber = Integer.parseInt(map.get("pageNumber"));
+        int pageSize = Integer.parseInt(map.get("pageSize"));
+        int academicTerm = Integer.parseInt(map.get("academicTerm"));
         return Result.success(internshiptaskService.getTasksByTerm(academicTerm,pageNumber, pageSize));
     }
 
@@ -67,10 +70,10 @@ public class InternshiptaskController {
     public Result<Internshiptask> getsymble(@RequestParam Map<String, String> map) {
         log.info("获取关联实习任务", map);
         String courseCategory = map.get("courseCategory");
-        String academicTerm = map.get("academicTerm");
-        String className = map.get("className");
+        int academicTerm = Integer.parseInt(map.get("academicTerm"));
+        String courseName = map.get("courseName");
         // 根据课程类别和课程学期,查询
-        Internshiptask internshiptask = internshiptaskService.getSymbol(courseCategory, academicTerm, className);
+        Internshiptask internshiptask = internshiptaskService.getSymbol(courseCategory, academicTerm, courseName);
         return Result.success(internshiptask);
     }
 
@@ -89,7 +92,6 @@ public class InternshiptaskController {
 
     /**
      * 报名
-     *
      * @param taskId
      * @return
      */
@@ -103,7 +105,8 @@ public class InternshiptaskController {
         teaTask.setMark(1); // 系统教师
         teaTask.setTaskId(taskId);
         teaTask.setUserId(user.getId());
-        teaTask.setDate(new Date(String.valueOf(new SimpleDateFormat("yyyy-MM-dd"))));
+        teaTask.setTime(new Date(String.valueOf(new SimpleDateFormat("yyyy-MM-dd"))));
+        teaTask.setAcademicTerm(internshiptaskService.getTaskTermByTaskId(taskId));
         if (teaTaskService.applyTask(teaTask)){
             return Result.success();
         }
@@ -125,7 +128,7 @@ public class InternshiptaskController {
         teaTask.setMark(2); // 其他教师
         teaTask.setTaskId(taskId);
         teaTask.setUserId(teaId);
-        teaTask.setDate(new Date(String.valueOf(new SimpleDateFormat("yyyy-MM-dd"))));
+        teaTask.setTime(new Date(String.valueOf(new SimpleDateFormat("yyyy-MM-dd"))));
         if (teaTaskService.intoTask(teaTask)){
             return Result.success();
         }

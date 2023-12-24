@@ -34,7 +34,7 @@ public class SecurityConfig {
         http
                 // 打开 /user
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",

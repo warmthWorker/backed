@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface InternshiptaskService {
 
+
+    public Integer getTaskTermByTaskId(Integer taskId);
     public boolean addTask(Internshiptask internshiptask);
 
     public List<ApplyTaskVo> getTasks(int pageNumber, int pageSize);
 
     public List<ApplyTaskVo> getTasksByTerm(int getTasksByTerm,int pageNumber, int pageSize);
 
-    public Internshiptask getSymbol(String courseCategory,String academicTerm,String className);
+    public Internshiptask getSymbol(String courseCategory,Integer academicTerm,String className);
 }
