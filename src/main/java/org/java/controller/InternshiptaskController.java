@@ -10,6 +10,7 @@ import org.java.entity.pojo.TeaTask;
 import org.java.entity.pojo.User;
 import org.java.entity.vo.ApplyTaskVo;
 import org.java.entity.vo.HistoryTaskVo;
+import org.java.entity.vo.TeaTaskVo;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.UserMapper;
 import org.java.service.ConTaskService;
@@ -63,7 +64,8 @@ public class InternshiptaskController {
         int pageNumber = Integer.parseInt(map.get("pageNumber"));
         int pageSize = Integer.parseInt(map.get("pageSize"));
         int academicTerm = Integer.parseInt(map.get("academicTerm"));
-        return Result.success(internshiptaskService.getTasksByTerm(academicTerm,pageNumber, pageSize));
+        String courseName = map.get("courseName");
+        return Result.success(internshiptaskService.getTasksByTerm(courseName,academicTerm,pageNumber, pageSize));
     }
 
     @GetMapping("/getsymble")
@@ -91,23 +93,47 @@ public class InternshiptaskController {
     }
 
     /**
-     * 报名
+     * 教师报名
      * @param taskId
      * @return
      */
-    @GetMapping("/applyTask")
-    public Result applyTask(Integer taskId) {
-        log.info("报名",taskId);
+    @GetMapping("/applyTaskTea")
+    public Result applyTaskTea(Integer taskId) {
+        log.info("教师报名{}",taskId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
         TeaTask teaTask = new TeaTask();
-        teaTask.setMark(1); // 系统教师
+        teaTask.setMark(0); // 未通过
         teaTask.setTaskId(taskId);
         teaTask.setUserId(user.getId());
-        teaTask.setTime(new Date(String.valueOf(new SimpleDateFormat("yyyy-MM-dd"))));
+        teaTask.setTime(new Date());
         teaTask.setAcademicTerm(internshiptaskService.getTaskTermByTaskId(taskId));
         if (teaTaskService.applyTask(teaTask)){
+            return Result.success();
+        }
+        return Result.error("操作失败");
+    }
+
+    /**
+     * 获取需要通过报名的记录
+     */
+    @GetMapping("/getApplyInfo")
+    public Result<List<TeaTaskVo>> getApplyInfo(){
+        return Result.success(teaTaskService.findApplyInfo());
+    }
+
+    /**
+     * 管理员通过审核
+     * @param teaTaskId
+     * @return
+     */
+    @GetMapping("/applyTaskSys")
+    public Result applyTaskSys(Integer teaTaskId) {
+        log.info("管理员通过审核{}",teaTaskId);
+        TeaTask teaTaskById = teaTaskService.getTeaTaskById(teaTaskId);
+        teaTaskById.setMark(1); //系统教师
+        if (teaTaskService.applyTask(teaTaskById)){
             return Result.success();
         }
         return Result.error("操作失败");
@@ -128,7 +154,7 @@ public class InternshiptaskController {
         teaTask.setMark(2); // 其他教师
         teaTask.setTaskId(taskId);
         teaTask.setUserId(teaId);
-        teaTask.setTime(new Date(String.valueOf(new SimpleDateFormat("yyyy-MM-dd"))));
+        teaTask.setTime(new Date());
         if (teaTaskService.intoTask(teaTask)){
             return Result.success();
         }

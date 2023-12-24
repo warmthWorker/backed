@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.vo.HistoryTaskVo;
+import org.java.entity.vo.TeaTaskVo;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface TeaTaskMapper extends BaseMapper<TeaTask> {
     List<HistoryTaskVo> findHistoryTask();
 
     public List<HistoryTaskVo> getHistoryByName(@Param("username")String username);
+
+    public List<TeaTaskVo>  findTeaTaskInfo();
 }

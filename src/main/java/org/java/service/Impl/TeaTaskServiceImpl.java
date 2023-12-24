@@ -3,6 +3,7 @@ package org.java.service.Impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.vo.HistoryTaskVo;
+import org.java.entity.vo.TeaTaskVo;
 import org.java.mapper.TeaTaskMapper;
 import org.java.service.TeaTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,14 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
     @Override
     public List<HistoryTaskVo> getHistoryByName(String username) {
         return teaTaskMapper.getHistoryByName(username);
+    }
+
+    @Override
+    public List<TeaTaskVo> findApplyInfo(){
+        return teaTaskMapper.findTeaTaskInfo();
+    }
+
+    public TeaTask getTeaTaskById(Integer id){
+        return teaTaskMapper.selectById(id);
     }
 }

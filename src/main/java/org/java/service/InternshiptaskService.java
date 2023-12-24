@@ -13,7 +13,7 @@ public interface InternshiptaskService {
 
     public List<ApplyTaskVo> getTasks(int pageNumber, int pageSize);
 
-    public List<ApplyTaskVo> getTasksByTerm(int getTasksByTerm,int pageNumber, int pageSize);
+    public List<ApplyTaskVo> getTasksByTerm(String courseName,int getTasksByTerm,int pageNumber, int pageSize);
 
     public Internshiptask getSymbol(String courseCategory,Integer academicTerm,String className);
 }

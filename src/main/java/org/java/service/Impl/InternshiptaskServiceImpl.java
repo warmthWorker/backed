@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +49,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         return mapper.selectById(taskId).getAcademicTerm();
     }
 
+    @Transactional
     @Override
     public boolean addTask(Internshiptask internshiptask) {
         if (mapper.insert(internshiptask) > 0) {
@@ -60,16 +63,16 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 // 上个学年，学期字段相差10
                 if (internshiptask.getAcademicTerm() == conTask.getTerm() + 10) {
                     // 如果是相差一学年
-                    log.info("如果是相差一学年");
+                    log.info("相差一学年");
                     conTask.setLTaskId(conTask.getNTaskId());
-                    conTask.setNTaskId(internshiptask.getAcademicTerm());
+                    conTask.setNTaskId(internshiptask.getTaskId());
                 } else {
                     // 更新关联表
                     log.info("更新关联表");
                     conTask.setNTaskId(internshiptask.getTaskId());
                     conTask.setLTaskId(null);
                 }
-                conTaskMapper.insert(conTask);
+                conTaskMapper.updateById(conTask);
             } else {
                 //conTask为空，生成一个
                 log.info("conTask为空，生成一个");
@@ -122,12 +125,24 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
      * @return
      */
     @Override
-    public List<ApplyTaskVo> getTasksByTerm(int academicTerm, int pageNumber, int pageSize) {
+    public List<ApplyTaskVo> getTasksByTerm(String courseName,int academicTerm, int pageNumber, int pageSize) {
+        List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
+        if (courseName == null || courseName.isEmpty() || courseName.equals("undefined")){
+            //先给模糊查询
+            List<Internshiptask> course_names = mapper.selectList(new QueryWrapper<Internshiptask>()
+                    .like("course_name", courseName));
+            for (Internshiptask course_name : course_names) {
+                ApplyTaskVo applyTaskVo = new ApplyTaskVo();
+                BeanUtils.copyProperties(course_name, applyTaskVo);
+                applyTaskVos.add(applyTaskVo);
+            }
+           return getPage(applyTaskVos, pageNumber, pageSize);
+        }
         //查询当前学期的任务
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
                 .eq("academic_term", academicTerm));
         log.info("查询当前学期的任务{}", selectList);
-        List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
