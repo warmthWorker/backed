@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckIn {
+public class CheckIn {// 打卡表
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String stuId;

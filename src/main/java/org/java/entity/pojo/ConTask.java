@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConTask {
+public class ConTask {// 与上次任务有关联得连接表，其中term表示本次试验任务对应的学期
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer courseId;

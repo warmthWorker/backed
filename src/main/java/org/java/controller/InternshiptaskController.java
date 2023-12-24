@@ -32,9 +32,6 @@ import java.util.Map;
 @RequestMapping("/task")
 @Slf4j
 
-//@Tag(name = "任务相关")
-//@Api("任务相关")
-//@Api("实训任务相关")
 public class InternshiptaskController {
     @Autowired
     private InternshiptaskService internshiptaskService;
@@ -43,25 +40,10 @@ public class InternshiptaskController {
     @Autowired
     private UserMapper userMapper;
 
-    @GetMapping("/getTasks")
-    public Result<List<ApplyTaskVo>> getTasks(@RequestParam Map<String, String> map) {
-
-        log.info("获取数据：{}",map);
-        String pageNumber = map.get("pageNumber");
-        String pageSize = map.get("pageSize");
-        if (pageNumber.isEmpty() || pageSize.isEmpty()){
-            return Result.error("输入数据不完整");
-        }
-        int parseInt = Integer.parseInt(pageNumber);
-        int pareSize = Integer.parseInt(pageSize);
-        log.info("获取所有实训任务");
-        return Result.success(internshiptaskService.getTasks(parseInt, pareSize));
-//        return null;
-    }
 
     @GetMapping("/getTasksByTerm")
     public Result<List<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, String> map) {
-        log.info("获取当前学期所有实习任务",map);
+        log.info("获取当前学期所有实习任务{}",map);
 
         String  pageNumber = map.get("pageNumber");
         String pageSize = map.get("pageSize");
@@ -166,13 +148,14 @@ public class InternshiptaskController {
         log.info("系统教师加入其他老师" ,map);
         String taskId = map.get("taskId");
         String teaId = map.get("teaId");
-        int taskIdI = 0;
-        int teaIdI = 0;
+        int taskIdI ;
+        int teaIdI ;
 
         if (taskId.isEmpty() || teaId.isEmpty()){
-            taskIdI = Integer.parseInt(taskId);
-            teaIdI = Integer.parseInt(teaId);
+            return Result.error("输入数据不完整");
         }
+        taskIdI = Integer.parseInt(taskId);
+        teaIdI = Integer.parseInt(teaId);
         TeaTask teaTask = new TeaTask();
         teaTask.setMark(2); // 其他教师
         teaTask.setTaskId(taskIdI);

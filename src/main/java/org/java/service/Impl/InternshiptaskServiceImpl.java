@@ -90,33 +90,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         return false;
     }
 
-    /**
-     * 查询所有学期
-     *
-     * @param pageNumber
-     * @param pageSize
-     * @return
-     */
-    @Override
-    public List<ApplyTaskVo> getTasks(int pageNumber, int pageSize) {
-        List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<>());
 
-        List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-        User user = securityUser.getUser();
-        //查询单个老师所有学期的选课
-        List<TeaTask> teaTaskList = teaTaskMapper.selectList(new QueryWrapper<TeaTask>()
-                .eq("user_id", user.getId()));
-
-        for (Internshiptask internshiptask : selectList) {
-            // todo 不展示已经选过的
-
-            ApplyTaskVo applyTaskVo = new ApplyTaskVo();
-            BeanUtils.copyProperties(applyTaskVo, internshiptask);
-        }
-        return getPage(applyTaskVos, pageNumber, pageSize);
-    }
 
     /**
      * 查询当前学期
@@ -164,7 +138,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 // 如果在本学期老师id和任务id都相同,则表示已经选过
                 if (Objects.equals(user.getId(), teaTask.getUserId()) &&
                         teaTask.getTaskId().equals(internshiptask.getTaskId())) {
-                    break;
+                    break; // 结束最外层的这次循环
                 }
             }
             ApplyTaskVo applyTaskVo = new ApplyTaskVo();
@@ -203,28 +177,6 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         return null;
     }
 
-    /**
-     * 分页
-     *
-     * @param tasks
-     * @param pageNumber 当前页
-     * @param pageSize   每页大小
-     * @return
-     */
-    public static List<ApplyTaskVo> getPage(List<ApplyTaskVo> tasks, int pageNumber, int pageSize) {
-        int totalItems = tasks.size();
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-
-        if (pageNumber < 0 || pageNumber >= totalPages) {
-            // 页数超出范围，返回空列表或适当处理
-            return List.of();
-        }
-
-        int fromIndex = pageNumber * pageSize;
-        int toIndex = Math.min((pageNumber + 1) * pageSize, totalItems);
-
-        return tasks.subList(fromIndex, toIndex);
-    }
 }
 
 

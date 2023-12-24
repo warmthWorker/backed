@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor// 用户表 用户登录验证，collegeName表示所属学院
 public class User implements Serializable {
 
     @TableId(type = IdType.AUTO)

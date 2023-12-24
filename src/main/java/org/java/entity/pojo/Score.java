@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor// 分数表其中peacetime表是平时表现分，major表示专业分（需要任课老师填写）
 public class Score {
     @TableId(type = IdType.AUTO)
     private Integer sid;

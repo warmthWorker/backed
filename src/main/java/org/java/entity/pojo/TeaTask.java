@@ -18,7 +18,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeaTask {
+public class TeaTask {// 教师选课记录表
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer taskId;

@@ -15,7 +15,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Internshiptask {
+public class Internshiptask {//实习任务表
     @TableId(type = IdType.AUTO)
     private Integer taskId;
     private Integer academicTerm;

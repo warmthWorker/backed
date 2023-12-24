@@ -11,7 +11,6 @@ public interface InternshiptaskService {
     public Integer getTaskTermByTaskId(Integer taskId);
     public boolean addTask(Internshiptask internshiptask);
 
-    public List<ApplyTaskVo> getTasks(int pageNumber, int pageSize);
 
     public List<ApplyTaskVo> getTasksByTerm(String courseName,int getTasksByTerm,int pageNumber, int pageSize);
 
