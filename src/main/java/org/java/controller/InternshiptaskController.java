@@ -9,6 +9,7 @@ import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.pojo.User;
 import org.java.entity.vo.ApplyTaskVo;
+import org.java.entity.vo.HistoryTaskVo;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.UserMapper;
 import org.java.service.ConTaskService;
@@ -49,12 +50,22 @@ public class InternshiptaskController {
     public Result<List<ApplyTaskVo>> getTasks(@RequestParam Map<String, Integer> map) {
         Integer pageNumber = map.get("pageNumber");
         Integer pageSize = map.get("pageSize");
+        log.info("获取所有实训任务");
         return Result.success(internshiptaskService.getTasks(pageNumber, pageSize));
+    }
+
+    @GetMapping("/getTasksByTerm")
+    public Result<List<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, Integer> map) {
+        log.info("获取当前学期所有实习任务",map);
+        Integer pageNumber = map.get("pageNumber");
+        Integer pageSize = map.get("pageSize");
+        Integer academicTerm = map.get("academicTerm");
+        return Result.success(internshiptaskService.getTasksByTerm(academicTerm,pageNumber, pageSize));
     }
 
     @GetMapping("/getsymble")
     public Result<Internshiptask> getsymble(@RequestParam Map<String, String> map) {
-        log.info("获取全部", map);
+        log.info("获取关联实习任务", map);
         String courseCategory = map.get("courseCategory");
         String academicTerm = map.get("academicTerm");
         String className = map.get("className");
@@ -125,8 +136,23 @@ public class InternshiptaskController {
      * 教师历史实习任务任教情况
      * @return
      */
-//    @GetMapping("/getHistory")
-//    public
+    @GetMapping("/getHistory")
+    public Result<List<HistoryTaskVo>>  getHistoryTask(){
+        List<HistoryTaskVo> historyTask = teaTaskService.findHistoryTask();
+        log.info("教师历史实习任务任教情况",historyTask);
+        return Result.success(historyTask);
+    }
+
+    /**
+     * 根据姓名查询历史实习任务任教情况
+     * @return
+     */
+    @GetMapping("/getHistoryByName")
+    public Result<List<HistoryTaskVo>> getHistoryByName(String username){
+        List<HistoryTaskVo> historyByName = teaTaskService.getHistoryByName(username);
+        log.info("根据姓名查询历史实习任务任教情况",historyByName);
+        return Result.success(historyByName);
+    }
 
 
     /**
@@ -135,6 +161,7 @@ public class InternshiptaskController {
      */
     @GetMapping("/findByName")
     public Result<List<User>> findUserByName(String username){
+        log.info("模糊搜索教师名称",username);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("username", username);
 

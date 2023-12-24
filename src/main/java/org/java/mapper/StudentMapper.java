@@ -12,7 +12,7 @@ import org.java.entity.pojo.Student;
 * @Entity .Students
 */
 @Mapper
-public interface StudentsMapper extends BaseMapper<Student> {
+public interface StudentMapper extends BaseMapper<Student> {
 
 }
 

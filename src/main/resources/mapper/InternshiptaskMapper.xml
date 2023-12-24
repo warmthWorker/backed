@@ -5,19 +5,31 @@
 <mapper namespace="org.java.mapper.InternshiptaskMapper">
 
     <resultMap id="BaseResultMap" type="org.java.entity.pojo.Internshiptask">
-            <id property="task_id" column="task_id" jdbcType="INTEGER"/>
-            <result property="academic_term" column="academic_term" jdbcType="VARCHAR"/>
-            <result property="course_code" column="course_code" jdbcType="VARCHAR"/>
-            <result property="course_name" column="course_name" jdbcType="VARCHAR"/>
-            <result property="course_category" column="course_category" jdbcType="VARCHAR"/>
-            <result property="credit_hours" column="credit_hours" jdbcType="INTEGER"/>
-            <result property="class_name" column="class_name" jdbcType="VARCHAR"/>
-            <result property="student_count" column="student_count" jdbcType="INTEGER"/>
-            <result property="start_week" column="start_week" jdbcType="INTEGER"/>
+            <id property="taskId" column="task_id" jdbcType="INTEGER"/>
+            <result property="academicTerm" column="academic_term" jdbcType="VARCHAR"/>
+            <result property="courseCode" column="course_code" jdbcType="VARCHAR"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="courseCategory" column="course_category" jdbcType="VARCHAR"/>
+            <result property="creditHours" column="credit_hours" jdbcType="INTEGER"/>
+            <result property="className" column="class_name" jdbcType="VARCHAR"/>
+            <result property="studentCount" column="student_count" jdbcType="INTEGER"/>
+            <result property="startWeek" column="start_week" jdbcType="INTEGER"/>
             <result property="requirements" column="requirements" jdbcType="VARCHAR"/>
             <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
-            <result property="application_deadline" column="application_deadline" jdbcType="DATE"/>
+            <result property="applicationDeadline" column="application_deadline" jdbcType="DATE"/>
     </resultMap>
+        <resultMap id="HistoryTask" type="org.java.entity.vo.HistoryTaskVo">
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="collegeName" column="college_name" jdbcType="VARCHAR"/>
+            <result property="academicTerm" column="academic_term" jdbcType="VARCHAR"/>
+            <result property="courseCode" column="course_code" jdbcType="VARCHAR"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="courseCategory" column="course_category" jdbcType="VARCHAR"/>
+        </resultMap>
+
+
+
+
 
 
 </mapper>

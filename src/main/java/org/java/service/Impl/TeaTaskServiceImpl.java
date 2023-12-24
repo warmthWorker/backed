@@ -2,10 +2,13 @@ package org.java.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.java.entity.pojo.TeaTask;
+import org.java.entity.vo.HistoryTaskVo;
 import org.java.mapper.TeaTaskMapper;
 import org.java.service.TeaTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -37,5 +40,19 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
             return true;
         }
         return false;
+    }
+
+    /**
+     * 历史实习任务任教情况
+     * @return
+     */
+    @Override
+    public List<HistoryTaskVo> findHistoryTask(){
+        return teaTaskMapper.findHistoryTask();
+    }
+
+    @Override
+    public List<HistoryTaskVo> getHistoryByName(String username) {
+        return teaTaskMapper.getHistoryByName(username);
     }
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.java.mapper.TeaTaskMapper">
+    <resultMap id="BaseResultMap" type="org.java.entity.pojo.TeaTask">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskId" column="task_id" jdbcType="INTEGER"/>
+        <result property="academicTerm" column="academic_term" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="date" column="date" jdbcType="DATE"/>
+    </resultMap>
+    <resultMap id="HistoryTask" type="org.java.entity.vo.HistoryTaskVo">
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="collegeName" column="college_name" jdbcType="VARCHAR"/>
+        <result property="academicTerm" column="academic_term" jdbcType="VARCHAR"/>
+        <result property="courseCode" column="course_code" jdbcType="VARCHAR"/>
+        <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+        <result property="courseCategory" column="course_category" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="findHistoryTask" resultMap="HistoryTask">
+        SELECT
+            u.username,
+            u.college_name,
+            tt.academic_term,
+            it.course_code,
+            it.course_name,
+            it.course_category
+        FROM
+            tea_task tt
+                INNER JOIN
+            user u ON tt.user_id = u.id
+                INNER JOIN
+            InternshipTask it ON tt.task_id = it.task_id
+        ORDER BY
+            tt.academic_term DESC
+    </select>
+
+    <select id="getHistoryByName" resultMap="HistoryTask">
+        SELECT
+            u.username,
+            u.college_name,
+            tt.academic_term,
+            it.course_code,
+            it.course_name,
+            it.course_category
+        FROM
+            tea_task tt
+                INNER JOIN
+            user u ON tt.user_id = u.id
+                INNER JOIN
+            InternshipTask it ON tt.task_id = it.task_id
+        WHERE
+            u.username = #{username}
+    </select>
+</mapper>

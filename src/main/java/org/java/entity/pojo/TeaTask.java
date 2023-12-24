@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * 老师选课表
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +20,7 @@ public class TeaTask {
     private Integer id;
     private Integer taskId;
     private Integer userId;
+    private Integer academicTerm;//学期
     @Value("0")
     private Integer mark;// 审核状态: 0 为审核 1已审核(管理员指定的系统教师) 2 系统教师加入的其他教师
 //    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")

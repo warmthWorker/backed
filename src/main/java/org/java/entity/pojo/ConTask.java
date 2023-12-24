@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ConTask {
     private Integer id;
     private Integer courseId;
-    private Integer term;
+    private Integer term;// 学期
     private String courseCategory;
     private String courseName;
     private Integer nTaskId; //本次试验任务id

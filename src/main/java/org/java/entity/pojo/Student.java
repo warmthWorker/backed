@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Student {
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private String id;
 
     private String grade;
 
-    private String class_name;
+    private String className;
 
     private String name;
 }
