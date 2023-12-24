@@ -9,13 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Course {
+public class Score {
     @TableId(type = IdType.AUTO)
-    private Integer id;
-    private String courseName;
-    private Integer tNumber;
-    private Integer nNumber;
-    private Integer credit;
-    private Integer period;
-    private Integer mark;
+    private Integer sid;
+    private Integer stuId;
+    private Integer taskId;
+    private Integer peacetime;
+    private Integer major;
+    private Integer total;
 }

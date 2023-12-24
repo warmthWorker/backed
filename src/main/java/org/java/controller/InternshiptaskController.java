@@ -44,38 +44,54 @@ public class InternshiptaskController {
     private UserMapper userMapper;
 
     @GetMapping("/getTasks")
-//    @ApiOperation("获取所有实训任务")
-//    @Operation(
-//            summary = "获取所有实训任务",
-//            description = "获取所有实训任务")
     public Result<List<ApplyTaskVo>> getTasks(@RequestParam Map<String, String> map) {
 
         log.info("获取数据：{}",map);
-        Integer pageNumber = Integer.valueOf(map.get("pageNumber"));
-        Integer pageSize = Integer.valueOf(map.get("pageSize"));
+        String pageNumber = map.get("pageNumber");
+        String pageSize = map.get("pageSize");
+        if (pageNumber.isEmpty() || pageSize.isEmpty()){
+            return Result.error("输入数据不完整");
+        }
+        int parseInt = Integer.parseInt(pageNumber);
+        int pareSize = Integer.parseInt(pageSize);
         log.info("获取所有实训任务");
-        return Result.success(internshiptaskService.getTasks(pageNumber, pageSize));
+        return Result.success(internshiptaskService.getTasks(parseInt, pareSize));
 //        return null;
     }
 
     @GetMapping("/getTasksByTerm")
     public Result<List<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, String> map) {
         log.info("获取当前学期所有实习任务",map);
-        int pageNumber = Integer.parseInt(map.get("pageNumber"));
-        int pageSize = Integer.parseInt(map.get("pageSize"));
-        int academicTerm = Integer.parseInt(map.get("academicTerm"));
+
+        String  pageNumber = map.get("pageNumber");
+        String pageSize = map.get("pageSize");
+        String academicTerm= map.get("academicTerm");
         String courseName = map.get("courseName");
-        return Result.success(internshiptaskService.getTasksByTerm(courseName,academicTerm,pageNumber, pageSize));
+        int parseInt ;
+        int pareSize ;
+        int academicTermI ;
+        if (pageNumber.isEmpty() || pageSize.isEmpty() || academicTerm.isEmpty()){
+            return Result.error("输入数据不完整");
+        }
+        parseInt  = Integer.parseInt(pageNumber);
+        pareSize = Integer.parseInt(pageSize);
+        academicTermI = Integer.parseInt(academicTerm);
+//        System.out.println(parseInt);
+        return Result.success(internshiptaskService.getTasksByTerm(courseName,academicTermI,parseInt, pareSize));
     }
 
     @GetMapping("/getsymble")
     public Result<Internshiptask> getsymble(@RequestParam Map<String, String> map) {
         log.info("获取关联实习任务", map);
         String courseCategory = map.get("courseCategory");
-        int academicTerm = Integer.parseInt(map.get("academicTerm"));
+        String academicTerm = map.get("academicTerm");
         String courseName = map.get("courseName");
+        if (courseCategory.isEmpty() || academicTerm.isEmpty() || courseName.isEmpty()){
+            return Result.error("输入数据不完整");
+        }
+        Integer IacademicTerm = Integer.parseInt(academicTerm);
         // 根据课程类别和课程学期,查询
-        Internshiptask internshiptask = internshiptaskService.getSymbol(courseCategory, academicTerm, courseName);
+        Internshiptask internshiptask = internshiptaskService.getSymbol(courseCategory, IacademicTerm, courseName);
         return Result.success(internshiptask);
     }
 
@@ -120,6 +136,7 @@ public class InternshiptaskController {
      */
     @GetMapping("/getApplyInfo")
     public Result<List<TeaTaskVo>> getApplyInfo(){
+        log.info("获取需要通过报名的记录");
         return Result.success(teaTaskService.findApplyInfo());
     }
 
@@ -145,15 +162,21 @@ public class InternshiptaskController {
      * @return
      */
     @GetMapping("/intoTask")
-    public Result intoTask(@RequestParam Map<String, Integer> map) {
+    public Result intoTask(@RequestParam Map<String, String> map) {
         log.info("系统教师加入其他老师" ,map);
-        Integer taskId = map.get("taskId");
-        Integer teaId = map.get("teaId");
+        String taskId = map.get("taskId");
+        String teaId = map.get("teaId");
+        int taskIdI = 0;
+        int teaIdI = 0;
 
+        if (taskId.isEmpty() || teaId.isEmpty()){
+            taskIdI = Integer.parseInt(taskId);
+            teaIdI = Integer.parseInt(teaId);
+        }
         TeaTask teaTask = new TeaTask();
         teaTask.setMark(2); // 其他教师
-        teaTask.setTaskId(taskId);
-        teaTask.setUserId(teaId);
+        teaTask.setTaskId(taskIdI);
+        teaTask.setUserId(teaIdI);
         teaTask.setTime(new Date());
         if (teaTaskService.intoTask(teaTask)){
             return Result.success();

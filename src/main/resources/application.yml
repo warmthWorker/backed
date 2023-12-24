@@ -5,7 +5,16 @@ spring:
     url: jdbc:mysql://localhost:3306/word?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
-
+  mybatis:
+    configuration:
+      # MyBatis 配置
+      map-underscore-to-camel-case: true
+    # PageHelper 插件配置
+    pagehelper:
+      helperDialect: mysql
+      reasonable: true
+      supportMethodsArguments: true
+      params: pageNum=pageNumber;pageSize=pageSize;
 ai:
   jwt:
     secretkey: asd2waw10293uhw92348732894dh2ui12123n123em123wdq234324erw34

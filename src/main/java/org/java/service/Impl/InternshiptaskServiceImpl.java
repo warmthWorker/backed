@@ -4,6 +4,8 @@ package org.java.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.java.entity.SecurityUser;
 import org.java.entity.pojo.ConTask;
@@ -126,8 +128,10 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
      */
     @Override
     public List<ApplyTaskVo> getTasksByTerm(String courseName,int academicTerm, int pageNumber, int pageSize) {
+        // 开启分页
+        PageHelper.startPage(pageNumber, pageSize);
         List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
-        if (courseName == null || courseName.isEmpty() || courseName.equals("undefined")){
+        if (courseName != null || courseName.isEmpty() || courseName.equals("undefined")){
             //先给模糊查询
             List<Internshiptask> course_names = mapper.selectList(new QueryWrapper<Internshiptask>()
                     .like("course_name", courseName));
@@ -136,7 +140,9 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 BeanUtils.copyProperties(course_name, applyTaskVo);
                 applyTaskVos.add(applyTaskVo);
             }
-           return getPage(applyTaskVos, pageNumber, pageSize);
+            // 获取分页信息
+            PageInfo<ApplyTaskVo> pageInfo = new PageInfo<>(applyTaskVos);
+            return pageInfo.getList();
         }
         //查询当前学期的任务
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
@@ -166,7 +172,10 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
             applyTaskVos.add(applyTaskVo);
         }
         log.info("applyTaskVos{}", applyTaskVos);
-        return getPage(applyTaskVos, pageNumber, pageSize);
+        // 获取分页信息
+        PageInfo<ApplyTaskVo> pageInfo = new PageInfo<>(applyTaskVos);
+        // 返回分页结果
+        return pageInfo.getList();
     }
 
     @Override
@@ -203,13 +212,17 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
      * @return
      */
     public static List<ApplyTaskVo> getPage(List<ApplyTaskVo> tasks, int pageNumber, int pageSize) {
-        int fromIndex = pageNumber * pageSize;
-        int toIndex = Math.min((pageNumber + 1) * pageSize, tasks.size());
+        int totalItems = tasks.size();
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
 
-        if (fromIndex > toIndex || fromIndex >= tasks.size()) {
+        if (pageNumber < 0 || pageNumber >= totalPages) {
             // 页数超出范围，返回空列表或适当处理
             return List.of();
         }
+
+        int fromIndex = pageNumber * pageSize;
+        int toIndex = Math.min((pageNumber + 1) * pageSize, totalItems);
+
         return tasks.subList(fromIndex, toIndex);
     }
 }

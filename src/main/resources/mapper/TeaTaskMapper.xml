@@ -58,6 +58,7 @@
 
 
     <resultMap id="TeaTaskInfoResultMap" type="org.java.entity.vo.TeaTaskVo">
+        <result property="teaTaskId" column="id"/>
         <result property="username" column="username"/>
         <result property="collegeName" column="college_name"/>
         <result property="mark" column="mark"/>

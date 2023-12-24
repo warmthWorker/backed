@@ -15,7 +15,7 @@ public class Student {
 
     private String grade;
 
-    private String className;
+    private String courseName;
 
     private String name;
 }

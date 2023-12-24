@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeaTaskVo {
-    private Integer id;
+    private Integer teaTaskId;
     private String username;
     private String collegeName;
     private int mark;
