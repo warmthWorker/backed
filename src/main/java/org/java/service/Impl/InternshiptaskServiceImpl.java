@@ -187,7 +187,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         List<ConTask> conTaskList = conTaskMapper.selectList(new QueryWrapper<ConTask>()
                 .eq("course_category", courseCategory)
                 .eq("course_name", course_name));
-        log.info("获取同类型同名的");
+        log.info("获取同类型同名的{}",conTaskList);
         QueryWrapper<Internshiptask> queryWrapper = new QueryWrapper<>();
         for (ConTask conTask : conTaskList) {
             // 上个学年，学期字段相差10
@@ -211,17 +211,15 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
     public long calculateTaskDuration (Integer taskId){
         Internshiptask internshiptask = mapper.selectById(taskId);
         if (internshiptask.getTaskDeadline() == null || internshiptask.getBeginTaskTime() == null) {
-            // 如果开始时间或完成时间为空，返回0或适当处理
+            // 如果开始时间或完成时间为空，返回0
             return 0;
         }
         // 获取两个时间段的天数
-        long days = Duration.between(internshiptask.getBeginTaskTime().toInstant(), internshiptask.getTaskDeadline().toInstant()).toDays();
-
-        // 如果需要包括最后一天，可以在结果上加1
+        long days = Duration.between(internshiptask.getBeginTaskTime().toInstant(),
+                internshiptask.getTaskDeadline().toInstant()).toDays();
+        // 包括最后一天，在结果上加1
         return days + 1;
     }
-
-
 }
 
 

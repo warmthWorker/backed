@@ -25,6 +25,6 @@ public class TeaTask {// 教师选课记录表
     private Integer userId;
     private Integer academicTerm;//学期
     private Integer mark = 0;// 审核状态: 0 为审核 1已审核(管理员指定的系统教师) 2 系统教师加入的其他教师
-//    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS",timezone = "GMT+8")
     private Date time;
 }

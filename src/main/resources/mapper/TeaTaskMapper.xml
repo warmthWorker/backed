@@ -91,4 +91,68 @@
             tt.mark = 0 AND
             it.status = 0
     </select>
+
+
+    <resultMap id="InternshipTaskResultMap" type="org.java.entity.vo.EndTimeTaskVo">
+        <result column="task_id" property="taskId" />
+        <result column="academic_term" property="academicTerm" />
+        <result column="course_code" property="courseCode" />
+        <result column="course_name" property="courseName" />
+        <result column="course_category" property="courseCategory" />
+        <result column="credit_hours" property="creditHours" />
+        <result column="class_name" property="className" />
+        <result column="student_count" property="studentCount" />
+        <result column="start_week" property="startWeek" />
+        <result column="status" property="status" />
+    </resultMap>
+
+
+    <!-- 在你的Mapper XML文件中添加以下内容 -->
+    <select id="selectInternshipTaskByUserId" resultMap="InternshipTaskResultMap">
+        SELECT
+            it.task_id ,
+            it.academic_term,
+            it.course_code,
+            it.course_name,
+            it.course_category,
+            it.credit_hours,
+            it.class_name,
+            it.student_count,
+            it.start_week,
+            it.status
+        FROM
+            tea_task tt
+                JOIN
+            internshiptask it ON tt.task_id = it.task_id
+        WHERE
+            tt.user_id = #{userId} AND
+            tt.mark IN (1, 2) AND
+            it.status = 1;
+    </select>
+
+    <resultMap id="getUser" type="org.java.entity.vo.GetUserDataVo">
+        <result property="username" column="username"/>
+        <result property="collegeName" column="college_name"/>
+        <!-- 添加其他属性映射 -->
+    </resultMap>
+
+
+    <!-- 查询语句 -->
+    <select id="getUserData" resultMap="getUser">
+        SELECT u.username, u.college_name
+        FROM user u
+        LEFT JOIN tea_task t ON u.id = t.user_id
+        WHERE
+        (
+        <if test="username != null and username != ''">
+            u.username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="username == null or username == ''">
+            1=1
+        </if>
+        )
+        OR t.user_id IS NULL
+        AND t.mark = 0;
+    </select>
+
 </mapper>

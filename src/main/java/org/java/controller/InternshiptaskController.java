@@ -11,10 +11,7 @@ import org.java.entity.dto.InternShipTaskDto;
 import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.pojo.User;
-import org.java.entity.vo.ApplyTaskVo;
-import org.java.entity.vo.EndTimeTaskVo;
-import org.java.entity.vo.HistoryTaskVo;
-import org.java.entity.vo.TeaTaskVo;
+import org.java.entity.vo.*;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.UserMapper;
 import org.java.service.ConTaskService;
@@ -136,9 +133,8 @@ public class InternshiptaskController {
     @GetMapping("/applyTaskTea")
     public Result applyTaskTea(Integer taskId) {
         log.info("教师报名{}",taskId);
-        Internshiptask internshiptask = internshiptaskService.getOne(new QueryWrapper<Internshiptask>()
-                                    .eq("task_id", taskId));
-
+//        Internshiptask internshiptask = internshiptaskService.getOne(new QueryWrapper<Internshiptask>()
+//                                    .eq("task_id", taskId));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
@@ -171,17 +167,50 @@ public class InternshiptaskController {
     @GetMapping("/applyTaskSys")
     public Result applyTaskSys(Integer teaTaskId) {
         log.info("管理员通过审核{}",teaTaskId);
-        TeaTask teaTaskById = teaTaskService.getTeaTaskById(teaTaskId);
-        teaTaskById.setMark(1); //系统教师
-        UpdateWrapper<Internshiptask> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",teaTaskById.getTaskId()).set("begin_task_time",new Date());
-        internshiptaskService.update(null,updateWrapper);
-        if (teaTaskService.applyTask(teaTaskById)){
+        TeaTask task = teaTaskService.getTeaTaskById(teaTaskId);
+
+        UpdateWrapper<Internshiptask> updateWrapper1 = new UpdateWrapper<>();
+        updateWrapper1.eq("task_id",task.getTaskId())
+                .set("status",1)
+                .set("begin_task_time",new Date());
+
+        UpdateWrapper<TeaTask> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",teaTaskId)
+                    .set("time",new Date())
+                    .set("mark",1);
+        if (teaTaskService.update(null,updateWrapper)
+                && internshiptaskService.update(null,updateWrapper1)){
             return Result.success();
         }
         return Result.error("操作失败");
     }
 
+
+    /**
+     * 教师获取自己负责的班级
+     * @param
+     * @return
+     */
+    @GetMapping("/getTodoTask")
+    public Result<List<EndTimeTaskVo>> getTodoTask(){
+        // 查询条件还要有任务只能在进行时才能查到 status 1
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        User user = securityUser.getUser();
+
+        return Result.success(teaTaskService.selectInternshipTaskByUserId(user.getId()));
+    }
+
+    /**
+     * 根据姓名查询模糊查询教师，教师的状态一定都是未进行教学任务的，
+     * 如果查询不输入结果则视为查询所有，如果输入结果，则视为条件模糊查询
+     * @param username
+     * @return
+     */
+    @GetMapping("/getUserData")
+    public Result<List<GetUserDataVo>> getUserData(String username){
+        return Result.success(teaTaskService.getUserData(username));
+    }
     /**
      * 系统教师加入其他老师
      * @param map
@@ -243,6 +272,8 @@ public class InternshiptaskController {
         log.info("模糊搜索教师名称{}",username);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("username", username);
+
+
 
         List<User> userList = userMapper.selectList(queryWrapper);
         return Result.success(userList);

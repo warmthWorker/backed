@@ -2,6 +2,8 @@ package org.java.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.java.entity.pojo.TeaTask;
+import org.java.entity.vo.EndTimeTaskVo;
+import org.java.entity.vo.GetUserDataVo;
 import org.java.entity.vo.HistoryTaskVo;
 import org.java.entity.vo.TeaTaskVo;
 import org.java.mapper.TeaTaskMapper;
@@ -61,8 +63,17 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
     public List<TeaTaskVo> findApplyInfo(Integer taskId){
         return teaTaskMapper.findTeaTaskInfo(taskId);
     }
-
+    @Override
     public TeaTask getTeaTaskById(Integer id){
         return teaTaskMapper.selectById(id);
+    }
+
+    @Override
+    public List<EndTimeTaskVo> selectInternshipTaskByUserId(Integer userId){
+        return teaTaskMapper.selectInternshipTaskByUserId(userId);
+    }
+    @Override
+    public List<GetUserDataVo> getUserData(String username){
+        return teaTaskMapper.getUserData(username);
     }
 }

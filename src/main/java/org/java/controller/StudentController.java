@@ -4,24 +4,26 @@ package org.java.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.java.entity.SecurityUser;
 import org.java.entity.dto.CheckInDto;
 import org.java.entity.dto.CheckInStudentsDto;
 import org.java.entity.dto.InputScoreDto;
-import org.java.entity.pojo.CheckIn;
-import org.java.entity.pojo.Internshiptask;
-import org.java.entity.pojo.Score;
-import org.java.entity.pojo.Student;
+import org.java.entity.pojo.*;
 import org.java.entity.vo.ApplyTaskVo;
 import org.java.entity.vo.CheckInStudentVo;
 import org.java.entity.vo.CheckInVo;
+import org.java.entity.vo.EndTimeTaskVo;
 import org.java.mapper.CheckInMapper;
 import org.java.mapper.ScoreMapper;
 import org.java.mapper.StudentMapper;
 import org.java.service.CheckInService;
 import org.java.service.InternshiptaskService;
 import org.java.service.ScoreService;
+import org.java.service.TeaTaskService;
 import org.java.utils.resonse.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -46,6 +48,10 @@ public class StudentController {
     private ScoreService scoreService;
     @Autowired
     private InternshiptaskService internshiptaskService;
+    @Autowired
+    private TeaTaskService teaTaskService;
+
+
 
 
     /**
@@ -89,6 +95,12 @@ public class StudentController {
     }
 
     //获取某班某天的未打卡人信息
+
+    /**
+     * 获取某班某天的未打卡人信息
+     * @param checkInStudentsDto
+     * @return
+     */
     @GetMapping("/getNoCheckInStudents")
     public Result<List<CheckInStudentVo>> getNoCheckInStudents(@RequestBody CheckInStudentsDto checkInStudentsDto){
         log.info("获取某班某天的未打卡人信息{}",checkInStudentsDto);
@@ -98,6 +110,12 @@ public class StudentController {
 
     }
     // 获取某班某天以打卡人信息
+
+    /**
+     * 获取某班某天以打卡人信息
+     * @param checkInStudentsDto
+     * @return
+     */
     @GetMapping("/getCheckInStudents")
     public Result<List<CheckInStudentVo>>  getCheckInStudents(@RequestBody CheckInStudentsDto checkInStudentsDto){
         log.info("获取某班某天以打卡人信息{}",checkInStudentsDto);
@@ -151,6 +169,12 @@ public class StudentController {
     }
 
     // 获取学生总成绩
+
+    /**
+     * 获取学生总成绩
+     * @param map
+     * @return
+     */
     @GetMapping("/getTotalScore")
     public Result<Map<String, Double>> getTotalScore(@RequestParam Map<String, String> map){
         log.info("获取学生总成绩{}",map);

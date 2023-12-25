@@ -2,6 +2,8 @@ package org.java.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.java.entity.pojo.TeaTask;
+import org.java.entity.vo.EndTimeTaskVo;
+import org.java.entity.vo.GetUserDataVo;
 import org.java.entity.vo.HistoryTaskVo;
 import org.java.entity.vo.TeaTaskVo;
 
@@ -20,4 +22,8 @@ public interface TeaTaskService extends IService<TeaTask> {
     public List<TeaTaskVo> findApplyInfo(Integer taskId);
 
     public TeaTask getTeaTaskById(Integer id);
+
+    public List<EndTimeTaskVo> selectInternshipTaskByUserId(Integer userId);
+
+    public List<GetUserDataVo> getUserData(String username);
 }
