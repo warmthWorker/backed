@@ -1,6 +1,9 @@
 package org.java.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.java.entity.dto.GetUserDataDto;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.vo.EndTimeTaskVo;
 import org.java.entity.vo.GetUserDataVo;
@@ -73,7 +76,11 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
         return teaTaskMapper.selectInternshipTaskByUserId(userId);
     }
     @Override
-    public List<GetUserDataVo> getUserData(String username){
-        return teaTaskMapper.getUserData(username);
+    public PageInfo<GetUserDataVo> getUserData(GetUserDataDto getUserDataDto){
+        // 开启分页
+        PageHelper.startPage(getUserDataDto.getPageNumber(), getUserDataDto.getPageSize());
+        List<GetUserDataVo> userDataVos = teaTaskMapper.getUserData(getUserDataDto.getUsername());
+
+        return new PageInfo<>(userDataVos);
     }
 }

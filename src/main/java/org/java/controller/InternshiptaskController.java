@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.java.entity.SecurityUser;
 import org.java.entity.dto.GetEndTaskTimeDto;
+import org.java.entity.dto.GetUserDataDto;
 import org.java.entity.dto.InternShipTaskDto;
 import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.TeaTask;
@@ -204,12 +205,12 @@ public class InternshiptaskController {
     /**
      * 根据姓名查询模糊查询教师，教师的状态一定都是未进行教学任务的，
      * 如果查询不输入结果则视为查询所有，如果输入结果，则视为条件模糊查询
-     * @param username
+     * @param getUserDataDto
      * @return
      */
     @GetMapping("/getUserData")
-    public Result<List<GetUserDataVo>> getUserData(String username){
-        return Result.success(teaTaskService.getUserData(username));
+    public Result<PageInfo<GetUserDataVo>> getUserData(@RequestBody GetUserDataDto getUserDataDto){
+        return Result.success(teaTaskService.getUserData(getUserDataDto));
     }
     /**
      * 系统教师加入其他老师

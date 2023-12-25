@@ -1,6 +1,8 @@
 package org.java.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
+import org.java.entity.dto.GetUserDataDto;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.vo.EndTimeTaskVo;
 import org.java.entity.vo.GetUserDataVo;
@@ -25,5 +27,5 @@ public interface TeaTaskService extends IService<TeaTask> {
 
     public List<EndTimeTaskVo> selectInternshipTaskByUserId(Integer userId);
 
-    public List<GetUserDataVo> getUserData(String username);
+    public PageInfo<GetUserDataVo> getUserData(GetUserDataDto getUserDataDto);
 }
