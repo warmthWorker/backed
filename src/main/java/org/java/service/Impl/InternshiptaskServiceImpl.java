@@ -135,15 +135,19 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 .eq("user_id", user.getId())
                 .eq("academic_term", academicTerm));
         log.info("查询单个老师一个学期的选课:{}", teaTaskList);
+        boolean flag = false;
         for (Internshiptask internshiptask : selectList) {
+
             // todo 不展示已经选过的
             for (TeaTask teaTask : teaTaskList) {
                 // 如果在本学期老师id和任务id都相同,则表示已经选过
                 if (Objects.equals(user.getId(), teaTask.getUserId()) &&
                         teaTask.getTaskId().equals(internshiptask.getTaskId())) {
+                    flag = true;
                     break; // 结束最外层的这次循环
                 }
             }
+            if(flag) break;
             ApplyTaskVo applyTaskVo = new ApplyTaskVo();
             BeanUtils.copyProperties(internshiptask, applyTaskVo);
             applyTaskVos.add(applyTaskVo);
