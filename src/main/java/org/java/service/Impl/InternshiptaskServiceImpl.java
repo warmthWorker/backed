@@ -26,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Transient;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -176,6 +178,22 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         }
         return null;
     }
+
+    @Override
+    // 计算实习任务总天数
+    public long calculateTaskDuration (Integer taskId){
+        Internshiptask internshiptask = mapper.selectById(taskId);
+        if (internshiptask.getTaskDeadline() == null || internshiptask.getBeginTaskTime() == null) {
+            // 如果开始时间或完成时间为空，返回0或适当处理
+            return 0;
+        }
+        // 获取两个时间段的天数
+        long days = Duration.between(internshiptask.getBeginTaskTime().toInstant(), internshiptask.getTaskDeadline().toInstant()).toDays();
+
+        // 如果需要包括最后一天，可以在结果上加1
+        return days + 1;
+    }
+
 
 }
 

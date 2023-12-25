@@ -38,7 +38,7 @@
             tt.academic_term DESC
     </select>
 
-    <select id="getHistoryByName" resultMap="HistoryTask">
+    <select id="getHistoryById" resultMap="HistoryTask">
         SELECT
             u.username,
             u.college_name,
@@ -53,7 +53,7 @@
                 INNER JOIN
             InternshipTask it ON tt.task_id = it.task_id
         WHERE
-            u.username = #{username}
+            u.id = #{teaId}
     </select>
 
 

@@ -183,9 +183,9 @@ public class InternshiptaskController {
      * @return
      */
     @GetMapping("/getHistoryByName")
-    public Result<List<HistoryTaskVo>> getHistoryByName(String username){
-        List<HistoryTaskVo> historyByName = teaTaskService.getHistoryByName(username);
-        log.info("根据姓名查询历史实习任务任教情况",historyByName);
+    public Result<List<HistoryTaskVo>> getHistoryByName(Integer teaId){
+        List<HistoryTaskVo> historyByName = teaTaskService.getHistoryById(teaId);
+        log.info("根据id查询历史实习任务任教情况",historyByName);
         return Result.success(historyByName);
     }
 

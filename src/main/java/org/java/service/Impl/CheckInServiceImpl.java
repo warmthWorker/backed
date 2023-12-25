@@ -2,8 +2,11 @@ package org.java.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.java.entity.dto.CheckInDto;
 import org.java.entity.pojo.CheckIn;
+import org.java.entity.vo.CheckInStudentVo;
 import org.java.entity.vo.CheckInVo;
 import org.java.mapper.CheckInMapper;
 import org.java.service.CheckInService;
@@ -16,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CheckInServiceImpl extends
         ServiceImpl<CheckInMapper, CheckIn> implements CheckInService {
 
@@ -28,27 +32,27 @@ public class CheckInServiceImpl extends
     public Integer checkInOption(CheckInDto checkInDto){
         CheckIn checkIn = new CheckIn();
         BeanUtils.copyProperties(checkInDto, checkIn);
-        //  开始时间
-        Date checkInTime = checkInDto.getCheckInTime();
-        // 结束时间
-        Date checkOutTime = checkInDto.getCheckOutTime();
-        // 打卡时间
-        Date attendanceDate = checkInDto.getAttendanceDate();
-        if (checkInTime != null && checkOutTime != null) {
-            if (attendanceDate.before(checkInTime)) {
-                checkIn.setStatus(1); // 在上班之前打卡
-                checkInMapper.insert(checkIn);
-                return 1;
-            } else if (attendanceDate.before(checkOutTime)
-                    && attendanceDate.after(checkInTime)) {
-                checkIn.setStatus(2); // 在上班之中打卡
-                checkInMapper.insert(checkIn);
-                return 2;
-            }
-        }
-        checkIn.setStatus(0); // 下班之后或其他情况
-        checkInMapper.insert(checkIn);
-        return 0;
+        log.info("打卡记录{}",checkIn);
+//        //  开始时间
+//        Date checkInTime = checkIn.getCheckInTime();
+//        // 结束时间
+//        Date checkOutTime = checkIn.getCheckOutTime();
+//        // 打卡时间
+//        Date attendanceDate = checkInDto.getAttendanceDate();
+//        if (checkInTime != null && checkOutTime != null) {
+//            if (attendanceDate.before(checkInTime)) {
+//                checkIn.setStatus(1); // 在上班之前打卡
+//                checkInMapper.insert(checkIn);
+//                return 1;
+//            } else if (attendanceDate.before(checkOutTime)
+//                    && attendanceDate.after(checkInTime)) {
+//                checkIn.setStatus(2); // 在上班之中打卡
+//                checkInMapper.insert(checkIn);
+//                return 2;
+//            }
+//        }
+//        checkIn.setStatus(0); // 下班之后或其他情况
+        return checkInMapper.insert(checkIn);
     }
 
 //    @Override
@@ -76,5 +80,30 @@ public class CheckInServiceImpl extends
             BeanUtils.copyProperties(checkIn, checkInVo);
         }
         return checkInVos;
+    }
+
+    // 获取学生打卡天数
+    public Integer getCheckInDays(Integer stuId, Integer taskId) {
+        // 根据学生ID和任务ID查询打卡记录，并计算打卡天数
+        // 示例逻辑：假设有一个方法 getCheckInRecords 返回打卡记录列表
+        List<CheckIn> checkInRecords = getCheckInRecords(stuId, taskId);
+        return checkInRecords.size();
+    }
+
+    // 获取学生的打卡记录
+    public List<CheckIn> getCheckInRecords(Integer stuId, Integer taskId) {
+        QueryWrapper<CheckIn> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("stu_id", stuId)
+                .eq("task_id", taskId);
+
+        return checkInMapper.selectList(queryWrapper);
+    }
+
+    public List<CheckInStudentVo> getCheckedInStudents(String courseName, Date attendanceDate){
+        return checkInMapper.getCheckedInStudents(courseName,attendanceDate);
+    }
+
+    public List<CheckInStudentVo> getNoCheckedInStudents(String courseName, Date attendanceDate){
+        return checkInMapper.getNoCheckInStudents(courseName,attendanceDate);
     }
 }

@@ -29,6 +29,10 @@ public class Internshiptask {//实习任务表
     private String requirements;
     private String remarks;
 //    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    private Date applicationDeadline;
-    private Integer status = 0;// 未结束0 已结束1
+    private Date applicationDeadline; // 报名截止时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date beginTaskTime; // 任务开始时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date taskDeadline; // 任务完成时间，手动结束
+    private Integer status = 0;// 可以报名0 任务开始1  任务结束2
 }

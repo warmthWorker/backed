@@ -14,7 +14,7 @@ public class Score {
     private Integer sid;
     private Integer stuId;
     private Integer taskId;
-    private Integer peacetime;
-    private Integer major;
-    private Integer total;
+    private double peacetime;
+    private double major;
+    private double total;
 }

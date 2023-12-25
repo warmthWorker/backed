@@ -18,7 +18,7 @@ public interface TeaTaskMapper extends BaseMapper<TeaTask> {
      */
     List<HistoryTaskVo> findHistoryTask();
 
-    public List<HistoryTaskVo> getHistoryByName(@Param("username")String username);
+    public List<HistoryTaskVo> getHistoryById(@Param("teaId")Integer teaId);
 
     public List<TeaTaskVo>  findTeaTaskInfo();
 }

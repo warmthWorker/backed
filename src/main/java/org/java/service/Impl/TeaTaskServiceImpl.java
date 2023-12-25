@@ -53,8 +53,8 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
     }
 
     @Override
-    public List<HistoryTaskVo> getHistoryByName(String username) {
-        return teaTaskMapper.getHistoryByName(username);
+    public List<HistoryTaskVo> getHistoryById(Integer teaId) {
+        return teaTaskMapper.getHistoryById(teaId);
     }
 
     @Override
