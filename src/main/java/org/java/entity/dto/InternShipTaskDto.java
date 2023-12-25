@@ -22,6 +22,6 @@ public class InternShipTaskDto {
     private Integer startWeek;
     private String requirements;
     private String remarks;
-//    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date applicationDeadline;
 }

@@ -58,8 +58,8 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
     }
 
     @Override
-    public List<TeaTaskVo> findApplyInfo(){
-        return teaTaskMapper.findTeaTaskInfo();
+    public List<TeaTaskVo> findApplyInfo(Integer taskId){
+        return teaTaskMapper.findTeaTaskInfo(taskId);
     }
 
     public TeaTask getTeaTaskById(Integer id){

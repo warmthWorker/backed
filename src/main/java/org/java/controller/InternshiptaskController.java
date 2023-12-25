@@ -158,9 +158,9 @@ public class InternshiptaskController {
      * 获取需要通过报名的记录
      */
     @GetMapping("/getApplyInfo")
-    public Result<List<TeaTaskVo>> getApplyInfo(){
+    public Result<List<TeaTaskVo>> getApplyInfo(Integer taskId){
         log.info("获取需要通过报名的记录");
-        return Result.success(teaTaskService.findApplyInfo());
+        return Result.success(teaTaskService.findApplyInfo(taskId));
     }
 
     /**

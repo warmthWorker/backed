@@ -20,7 +20,7 @@ public class ApplyTaskVo {
     private String className;
     private Integer studentCount;
     private Integer startWeek;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date applicationDeadline;
     private Integer status;
 }

@@ -194,7 +194,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
             }
         }
         // 如果没有符合的，就进行匹配
-        Integer taskId = conTaskMapper.findCon(courseCategory, course_name);
+        Integer taskId = conTaskMapper.findCon(course_name);
         if (taskId!= null){
             log.info("没有符合的，就进行匹配：{}",taskId);
             return mapper.selectById(taskId);

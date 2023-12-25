@@ -17,7 +17,7 @@ public interface TeaTaskService extends IService<TeaTask> {
 
     public List<HistoryTaskVo> getHistoryById(Integer teaId);
 
-    public List<TeaTaskVo> findApplyInfo();
+    public List<TeaTaskVo> findApplyInfo(Integer taskId);
 
     public TeaTask getTeaTaskById(Integer id);
 }

@@ -87,6 +87,7 @@
                 JOIN
             InternshipTask it ON tt.task_id = it.task_id
         WHERE
+            tt.task_id = #{taskId} AND
             tt.mark = 0 AND
             it.status = 0
     </select>
