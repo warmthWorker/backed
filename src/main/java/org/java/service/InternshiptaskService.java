@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.java.entity.pojo.Internshiptask;
 import org.java.entity.vo.ApplyTaskVo;
-
-import java.util.Date;
-import java.util.List;
+import org.java.entity.vo.EndTimeTaskVo;
+import org.java.utils.resonse.Result;
 
 public interface InternshiptaskService extends IService<Internshiptask> {
 
@@ -20,4 +19,6 @@ public interface InternshiptaskService extends IService<Internshiptask> {
     public Internshiptask getSymbol(String courseCategory,Integer academicTerm,String className);
 
     public long calculateTaskDuration (Integer taskId);
+
+    public PageInfo<EndTimeTaskVo> getTimeOutTask(int academicTerm, int pageNumber, int pageSize);
 }

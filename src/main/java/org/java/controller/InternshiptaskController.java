@@ -12,6 +12,7 @@ import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.pojo.User;
 import org.java.entity.vo.ApplyTaskVo;
+import org.java.entity.vo.EndTimeTaskVo;
 import org.java.entity.vo.HistoryTaskVo;
 import org.java.entity.vo.TeaTaskVo;
 import org.java.mapper.ConTaskMapper;
@@ -69,6 +70,34 @@ public class InternshiptaskController {
 //        System.out.println(parseInt);
         return Result.success(internshiptaskService.getTasksByTerm(courseName,academicTermI,parseInt, pareSize));
     }
+
+
+    /**
+     * 教务员在任务截至日期后对每个任务进行审核
+     * @param map
+     * @return
+     */
+    @GetMapping("/getTimeOutTask")
+    public  Result<PageInfo<EndTimeTaskVo>> getTimeOutTask(@RequestParam Map<String, String> map){
+        log.info("教务员在任务截至日期后对每个任务进行审核{}",map);
+
+        String  pageNumber = map.get("pageNumber");
+        String pageSize = map.get("pageSize");
+        String academicTerm= map.get("academicTerm");
+
+        int parseInt ;
+        int pareSize ;
+        int academicTermI ;
+        if (pageNumber.isEmpty() || pageSize.isEmpty() || academicTerm.isEmpty()){
+            return Result.error("输入数据不完整");
+        }
+        parseInt  = Integer.parseInt(pageNumber);
+        pareSize = Integer.parseInt(pageSize);
+        academicTermI = Integer.parseInt(academicTerm);
+
+        return Result.success(internshiptaskService.getTimeOutTask(academicTermI,parseInt,pareSize));
+    }
+    //先要获取截至日期后的任务,再对任务进行指定老师的操作
 
 
     @GetMapping("/getsymble")

@@ -2,7 +2,6 @@ package org.java.service.Impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -13,11 +12,12 @@ import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.pojo.User;
 import org.java.entity.vo.ApplyTaskVo;
+import org.java.entity.vo.EndTimeTaskVo;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.InternshiptaskMapper;
 import org.java.mapper.TeaTaskMapper;
 import org.java.service.InternshiptaskService;
-import org.java.service.TeaTaskService;
+import org.java.utils.resonse.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -107,7 +106,8 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         // 开启分页
         PageHelper.startPage(pageNumber, pageSize);
         List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
-        if (courseName != null || courseName.isEmpty() || courseName.equals("undefined")){
+        //courseName != null && !courseName.isEmpty() &&
+        if (!courseName.isEmpty()){
             //先给模糊查询
             List<Internshiptask> course_names = mapper.selectList(new QueryWrapper<Internshiptask>()
                     .like("course_name", courseName));
@@ -123,7 +123,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
                 .eq("academic_term", academicTerm)
                 .eq("status",0)
-                .le("applicationDeadline", new Date()));
+                .ge("application_deadline", new Date()));
         log.info("查询当前学期的任务{}", selectList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -154,7 +154,28 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         return new PageInfo<>(applyTaskVos);
     }
 
-    //教师查询当前学期的任务，该任务必须还未开始以及自己并未选
+    @Override
+    public PageInfo<EndTimeTaskVo> getTimeOutTask(int academicTerm, int pageNumber, int pageSize){
+        // 开启分页
+        PageHelper.startPage(pageNumber, pageSize);
+        ArrayList<EndTimeTaskVo> timeTaskVos = new ArrayList<>();
+        //查询当前学期未开始的任务且且当前时间小于截止时间
+        List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
+                .eq("academic_term", academicTerm)
+                .eq("status",0)
+                .le("application_deadline", new Date()));
+        log.info("查询当前学期截至时间已经过了的任务{}", selectList);
+
+        for (Internshiptask list : selectList) {
+            EndTimeTaskVo endTimeTaskVo = new EndTimeTaskVo();
+            BeanUtils.copyProperties(list, endTimeTaskVo);
+            timeTaskVos.add(endTimeTaskVo);
+        }
+        // 获取分页信息
+        return new PageInfo<>(timeTaskVos);
+    }
+
+
 
     @Override
     public Internshiptask getSymbol(String courseCategory, Integer academicTerm, String course_name) {

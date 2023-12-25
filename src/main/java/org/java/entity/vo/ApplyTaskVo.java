@@ -1,5 +1,6 @@
 package org.java.entity.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class ApplyTaskVo {
     private String className;
     private Integer studentCount;
     private Integer startWeek;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date applicationDeadline;
     private Integer status;
 }
