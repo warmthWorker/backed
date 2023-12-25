@@ -11,6 +11,9 @@ import org.java.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements ScoreService {
 
@@ -21,6 +24,12 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     @Autowired
     private ScoreMapper scoreMapper;
 
+    /**
+     * 计算学生平时成绩
+     * @param stuId
+     * @param taskId
+     * @return
+     */
     @Override
     // 计算学生平时成绩
     public double calculatePeacetimeScore(Integer stuId, Integer taskId) {
@@ -47,7 +56,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
 
     @Override
     // 获取学生总成绩
-    public double getStuTotalScore(Integer stuId, Integer taskId){
+    public Map<String, Double> getStuTotalScore(Integer stuId, Integer taskId){
+        HashMap<String, Double> doubleHashMap = new HashMap<>();
         double peacetimeScore = calculatePeacetimeScore(stuId, taskId);
         double majorScore = getMajorScore(stuId, taskId);
         double totalScore = peacetimeScore + majorScore;
@@ -61,7 +71,10 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
 
         scoreMapper.update(null, updateWrapper);
 
-        return totalScore;
+        doubleHashMap.put("peacetimeScore",peacetimeScore);
+        doubleHashMap.put("majorScore",majorScore);
+        doubleHashMap.put("totalScore",totalScore);
+        return doubleHashMap;
 
     }
 }

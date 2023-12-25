@@ -28,7 +28,7 @@ public class Internshiptask {//实习任务表
     private Integer startWeek;
     private String requirements;
     private String remarks;
-//    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date applicationDeadline; // 报名截止时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date beginTaskTime; // 任务开始时间

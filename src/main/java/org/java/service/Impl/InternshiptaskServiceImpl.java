@@ -103,7 +103,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
      * @return
      */
     @Override
-    public List<ApplyTaskVo> getTasksByTerm(String courseName,int academicTerm, int pageNumber, int pageSize) {
+    public PageInfo<ApplyTaskVo> getTasksByTerm(String courseName,int academicTerm, int pageNumber, int pageSize) {
         // 开启分页
         PageHelper.startPage(pageNumber, pageSize);
         List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
@@ -117,12 +117,13 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 applyTaskVos.add(applyTaskVo);
             }
             // 获取分页信息
-            PageInfo<ApplyTaskVo> pageInfo = new PageInfo<>(applyTaskVos);
-            return pageInfo.getList();
+            return new PageInfo<>(applyTaskVos);
         }
-        //查询当前学期的任务
+        //查询当前学期未开始的任务且且当前时间小于截止时间
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
-                .eq("academic_term", academicTerm));
+                .eq("academic_term", academicTerm)
+                .eq("status",0)
+                .le("applicationDeadline", new Date()));
         log.info("查询当前学期的任务{}", selectList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -148,11 +149,12 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
             applyTaskVos.add(applyTaskVo);
         }
         log.info("applyTaskVos{}", applyTaskVos);
-        // 获取分页信息
-        PageInfo<ApplyTaskVo> pageInfo = new PageInfo<>(applyTaskVos);
+
         // 返回分页结果
-        return pageInfo.getList();
+        return new PageInfo<>(applyTaskVos);
     }
+
+    //教师查询当前学期的任务，该任务必须还未开始以及自己并未选
 
     @Override
     public Internshiptask getSymbol(String courseCategory, Integer academicTerm, String course_name) {

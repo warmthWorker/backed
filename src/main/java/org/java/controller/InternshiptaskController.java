@@ -2,8 +2,11 @@ package org.java.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.java.entity.SecurityUser;
+import org.java.entity.dto.GetEndTaskTimeDto;
 import org.java.entity.dto.InternShipTaskDto;
 import org.java.entity.pojo.Internshiptask;
 import org.java.entity.pojo.TeaTask;
@@ -41,8 +44,13 @@ public class InternshiptaskController {
     private UserMapper userMapper;
 
 
+    /**
+     * 教师查询可报名的任务
+     * @param map
+     * @return
+     */
     @GetMapping("/getTasksByTerm")
-    public Result<List<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, String> map) {
+    public Result<PageInfo<ApplyTaskVo>> getTasksByTerm(@RequestParam Map<String, String> map) {
         log.info("获取当前学期所有实习任务{}",map);
 
         String  pageNumber = map.get("pageNumber");
@@ -62,9 +70,10 @@ public class InternshiptaskController {
         return Result.success(internshiptaskService.getTasksByTerm(courseName,academicTermI,parseInt, pareSize));
     }
 
+
     @GetMapping("/getsymble")
     public Result<Internshiptask> getsymble(@RequestParam Map<String, String> map) {
-        log.info("获取关联实习任务", map);
+        log.info("获取关联实习任务{}", map);
         String courseCategory = map.get("courseCategory");
         String academicTerm = map.get("academicTerm");
         String courseName = map.get("courseName");
@@ -79,7 +88,7 @@ public class InternshiptaskController {
 
     @PostMapping("/addTask")
     public Result addInfo(@RequestBody InternShipTaskDto internShipTaskDto) {
-        log.info("添加任务", internShipTaskDto);
+        log.info("添加任务{}", internShipTaskDto);
         Internshiptask internshiptask = new Internshiptask();
         // 类复制
         BeanUtils.copyProperties(internShipTaskDto, internshiptask);
@@ -98,6 +107,9 @@ public class InternshiptaskController {
     @GetMapping("/applyTaskTea")
     public Result applyTaskTea(Integer taskId) {
         log.info("教师报名{}",taskId);
+        Internshiptask internshiptask = internshiptaskService.getOne(new QueryWrapper<Internshiptask>()
+                                    .eq("task_id", taskId));
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
@@ -132,6 +144,9 @@ public class InternshiptaskController {
         log.info("管理员通过审核{}",teaTaskId);
         TeaTask teaTaskById = teaTaskService.getTeaTaskById(teaTaskId);
         teaTaskById.setMark(1); //系统教师
+        UpdateWrapper<Internshiptask> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",teaTaskById.getTaskId()).set("begin_task_time",new Date());
+        internshiptaskService.update(null,updateWrapper);
         if (teaTaskService.applyTask(teaTaskById)){
             return Result.success();
         }
@@ -145,7 +160,7 @@ public class InternshiptaskController {
      */
     @GetMapping("/intoTask")
     public Result intoTask(@RequestParam Map<String, String> map) {
-        log.info("系统教师加入其他老师" ,map);
+        log.info("系统教师加入其他老师{}" ,map);
         String taskId = map.get("taskId");
         String teaId = map.get("teaId");
         int taskIdI ;
@@ -174,7 +189,7 @@ public class InternshiptaskController {
     @GetMapping("/getHistory")
     public Result<List<HistoryTaskVo>>  getHistoryTask(){
         List<HistoryTaskVo> historyTask = teaTaskService.findHistoryTask();
-        log.info("教师历史实习任务任教情况",historyTask);
+        log.info("教师历史实习任务任教情况{}",historyTask);
         return Result.success(historyTask);
     }
 
@@ -185,7 +200,7 @@ public class InternshiptaskController {
     @GetMapping("/getHistoryByName")
     public Result<List<HistoryTaskVo>> getHistoryByName(Integer teaId){
         List<HistoryTaskVo> historyByName = teaTaskService.getHistoryById(teaId);
-        log.info("根据id查询历史实习任务任教情况",historyByName);
+        log.info("根据id查询历史实习任务任教情况{}",historyByName);
         return Result.success(historyByName);
     }
 
@@ -196,12 +211,30 @@ public class InternshiptaskController {
      */
     @GetMapping("/findByName")
     public Result<List<User>> findUserByName(String username){
-        log.info("模糊搜索教师名称",username);
+        log.info("模糊搜索教师名称{}",username);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("username", username);
 
         List<User> userList = userMapper.selectList(queryWrapper);
         return Result.success(userList);
+    }
+
+    /**
+     * 手动设置任务截止时间
+     * @param getEndTaskTimeDto
+     * @return
+     */
+    @GetMapping("/getEndTaskTime")
+    public Result getEndTaskTime(@RequestBody GetEndTaskTimeDto getEndTaskTimeDto){
+        log.info("手动设置任务截止时间{}",getEndTaskTimeDto);
+        UpdateWrapper<Internshiptask> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",getEndTaskTimeDto.getTaskId())
+                    .set("task_deadline",getEndTaskTimeDto.getEndTime());
+
+        if (internshiptaskService.update(null,updateWrapper)){
+            return Result.success();
+        }
+        return Result.error("操作失败");
     }
 
 }

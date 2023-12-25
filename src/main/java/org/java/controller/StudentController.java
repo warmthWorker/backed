@@ -152,16 +152,16 @@ public class StudentController {
 
     // 获取学生总成绩
     @GetMapping("/getTotalScore")
-    public Result getTotalScore(@RequestParam Map<String, String> map){
+    public Result<Map<String, Double>> getTotalScore(@RequestParam Map<String, String> map){
         log.info("获取学生总成绩{}",map);
         String stuId = map.get("stuId");
         String taskId = map.get("taskId");
         if (stuId.isEmpty() || taskId.isEmpty()){
             return Result.error("输入数据不完整");
         }
-        double totalScore = scoreService.getStuTotalScore(Integer.parseInt(stuId), Integer.parseInt(taskId));
-        log.info("总成绩：{}",totalScore);
-        return Result.success(totalScore);
+        Map<String, Double> doubleMap = scoreService.getStuTotalScore(Integer.parseInt(stuId), Integer.parseInt(taskId));
+        log.info("总成绩：{}",doubleMap);
+        return Result.success(doubleMap);
     }
 
 }
