@@ -4,10 +4,12 @@ package org.java.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.java.entity.dto.CreateCategoryDto;
+import org.java.entity.pojo.ConTask;
 import org.java.entity.pojo.Document;
 import org.java.entity.pojo.DocumentCategory;
 import org.java.entity.pojo.Internshiptask;
 import org.java.mapper.DocumentMapper;
+import org.java.service.ConTaskService;
 import org.java.service.DocumentCategoryService;
 import org.java.service.InternshiptaskService;
 import org.java.utils.resonse.Result;
@@ -26,8 +28,10 @@ public class DocumentCategoryController {
     private DocumentCategoryService categoryService;
     @Autowired
     private DocumentMapper documentMapper;
+//    @Autowired
+//    private InternshiptaskService internshiptaskService;
     @Autowired
-    private InternshiptaskService internshiptaskService;
+    private ConTaskService conTaskService;
 
     @GetMapping("/subcategories")
     public Result<List<DocumentCategory>> getSubcategories(Long parentId) {
@@ -76,12 +80,17 @@ public class DocumentCategoryController {
     public Result<List<Document>> getSymbolFiles(@RequestParam Map<String, String> map){
         log.info("获取关联实习任务{}", map);
 
-        Internshiptask internshiptask = internshiptaskService.getSymbol(map.get("courseCategory")
-                                        , Integer.parseInt(map.get("academicTerm"))
-                                        , map.get("courseName"));
+//        Internshiptask internshiptask = internshiptaskService.getSymbol(map.get("courseCategory")
+//                                        , Integer.parseInt(map.get("academicTerm"))
+//                                        , map.get("courseName"));
 
+        ConTask conTask = conTaskService.getOne(new QueryWrapper<ConTask>()
+                .eq("n_task_id", Integer.parseInt(map.get("taskId"))));
+        if (conTask == null){
+            return Result.error("没有关联实现任务文档");
+        }
         List<Document> documentList = documentMapper.selectList(new QueryWrapper<Document>()
-                            .eq("task_id", internshiptask.getTaskId()));
+                            .eq("task_id", conTask.getLTaskId()));
         return Result.success(documentList);
     }
 }

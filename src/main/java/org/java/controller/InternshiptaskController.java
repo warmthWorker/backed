@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class InternshiptaskController {
      * @return
      */
     @GetMapping("/getTimeOutTask")
-    public  Result<PageInfo<EndTimeTaskVo>> getTimeOutTask(@RequestParam Map<String, String> map){
+    public  Result<HashMap<String, Object>> getTimeOutTask(@RequestParam Map<String, String> map){
         log.info("教务员在任务截至日期后对每个任务进行审核{}",map);
 
         String  pageNumber = map.get("pageNumber");

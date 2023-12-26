@@ -139,7 +139,6 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         log.info("查询单个老师一个学期的选课:{}", teaTaskList);
         boolean flag = false;
         for (Internshiptask internshiptask : selectList) {
-
             // todo 不展示已经选过的
             for (TeaTask teaTask : teaTaskList) {
                 // 如果在本学期老师id和任务id都相同,则表示已经选过
@@ -161,24 +160,30 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
     }
 
     @Override
-    public PageInfo<EndTimeTaskVo> getTimeOutTask(int academicTerm, int pageNumber, int pageSize){
+    public HashMap<String, Object> getTimeOutTask(int academicTerm, int pageNumber, int pageSize){
         // 开启分页
         PageHelper.startPage(pageNumber, pageSize);
-        ArrayList<EndTimeTaskVo> timeTaskVos = new ArrayList<>();
         //查询当前学期未开始的任务且且当前时间小于截止时间
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
                 .eq("academic_term", academicTerm)
                 .eq("status",0)
                 .le("application_deadline", new Date()));
-        log.info("查询当前学期截至时间已经过了的任务{}", selectList);
+        PageInfo<Internshiptask> internshiptaskPageInfo = new PageInfo<>(selectList);
 
+        log.info("查询当前学期截至时间已经过了的任务{}", selectList);
+        ArrayList<EndTimeTaskVo> timeTaskVos = new ArrayList<>();
         for (Internshiptask list : selectList) {
             EndTimeTaskVo endTimeTaskVo = new EndTimeTaskVo();
             BeanUtils.copyProperties(list, endTimeTaskVo);
             timeTaskVos.add(endTimeTaskVo);
         }
+        HashMap<String, Object> hashMap = new HashMap<>();
+        PageInfo<EndTimeTaskVo> endTimeTaskVoPageInfo = new PageInfo<>(timeTaskVos);
         // 获取分页信息
-        return new PageInfo<>(timeTaskVos);
+        BeanUtils.copyProperties(internshiptaskPageInfo, endTimeTaskVoPageInfo);
+        hashMap.put("page",internshiptaskPageInfo);
+
+        return hashMap;
     }
 
 
