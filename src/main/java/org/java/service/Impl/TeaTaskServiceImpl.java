@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -84,16 +85,26 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
     }
     @Override
     public PageInfo<User> getUserData(GetUserDataDto getUserDataDto){
-        log.info("获取教师：{}",getUserDataDto);
-        // 开启分页
         PageHelper.startPage(getUserDataDto.getPageNumber(), getUserDataDto.getPageSize());
-//        List<GetUserDataVo> userDataVos = teaTaskMapper.getUserData(getUserDataDto.getUsername());
+        log.info("获取教师：{}",getUserDataDto);
+        List<TeaTask> teaTaskList = teaTaskMapper.selectList(new QueryWrapper<TeaTask>()
+                .eq("task_id", getUserDataDto.getTaskId())
+                .eq("academic_term", getUserDataDto.getTerm()));
+
         if (!getUserDataDto.getUsername().isEmpty()){
             List<User> userList = userMapper.selectList(new QueryWrapper<User>()
                     .like("username", getUserDataDto.getUsername()));
-            return new PageInfo<>(userList);
+            List<User> result = userList.stream()
+                    .filter(user -> teaTaskList.stream()
+                            .noneMatch(teaTask -> teaTask.getUserId().equals(user.getId())))
+                    .toList();
+            return new PageInfo<>(result);
         }
         List<User> userList = userMapper.selectList(null);
-        return new PageInfo<>(userList);
+        List<User> result = userList.stream()
+                .filter(user -> teaTaskList.stream()
+                        .noneMatch(teaTask -> teaTask.getUserId().equals(user.getId())))
+                .toList();
+        return new PageInfo<>(result);
     }
 }

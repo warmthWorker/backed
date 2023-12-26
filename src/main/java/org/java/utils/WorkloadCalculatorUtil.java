@@ -16,8 +16,14 @@ public class WorkloadCalculatorUtil {
     public double calculateWorkload(Internshiptask internshiptask) {
         log.info("工作量计算");
         // 将字符串转换为 LocalDateTime 对象
-        LocalDateTime beginTime = LocalDateTime.parse((CharSequence) internshiptask.getBeginTaskTime(), formatter);
-        LocalDateTime endTime = LocalDateTime.parse((CharSequence) internshiptask.getTaskDeadline(), formatter);
+//        LocalDateTime beginTime = LocalDateTime.parse((CharSequence) internshiptask.getBeginTaskTime(), formatter);
+//        LocalDateTime endTime = LocalDateTime.parse((CharSequence) internshiptask.getTaskDeadline(), formatter);
+        String beginTimeStr = formatter.format(internshiptask.getBeginTaskTime().toInstant());
+        String endTimeStr = formatter.format(internshiptask.getTaskDeadline().toInstant());
+
+        // 然后再进行解析
+        LocalDateTime beginTime = LocalDateTime.parse(beginTimeStr, formatter);
+        LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
         // 计算周次
         long weeks = calculateWeeks(beginTime, endTime);
         // 计算总工作量

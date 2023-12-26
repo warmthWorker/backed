@@ -11,4 +11,6 @@ public class GetUserDataDto {
     private Integer pageNumber;
     private Integer pageSize;
     private String username;
+    private Integer taskId;
+    private Integer term;
 }
