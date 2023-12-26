@@ -30,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -320,18 +321,20 @@ public class InternshiptaskController {
      */
     @GetMapping("/excelExport")
     public ResponseEntity<byte[]> exportExcel(Integer taskId) {
-        log.info("导出Excel表格{}",taskId);
+        log.info("导出Excel表格{}", taskId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
         List<String> teasByOneTask = internshiptaskService.findAllTeasByOneTask(taskId);
+
         try {
             // 调用生成Excel的逻辑
-            byte[] excelBytes = excelGeneratorUtil.generateExcel(teasByOneTask,taskId);
+            byte[] excelBytes = excelGeneratorUtil.generateExcel(teasByOneTask, taskId,user.getId());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx");
+//            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx", StandardCharsets.UTF_8);
+            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx; charset=UTF-8");
 
             // 返回生成的Excel文件
             return ResponseEntity.ok().headers(headers).body(excelBytes);

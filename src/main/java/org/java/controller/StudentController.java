@@ -64,25 +64,16 @@ public class StudentController {
 //         开启分页PageNumber PageSize
         PageHelper.startPage(Integer.parseInt(map.get("pageNumber")),
                             Integer.parseInt(map.get("pageSize")));
-
+        if (!map.get("stuName").isEmpty()){
+            List<Student> studentList = studentMapper.selectList(new QueryWrapper<Student>()
+                    .eq("class_name", map.get("className"))
+                    .like("name", map.get("stuName")));
+            return Result.success(new PageInfo<>(studentList));
+        }
         List<Student> studentList = studentMapper.selectList(new QueryWrapper<Student>()
-                .eq("course_name", map.get("course_name")));
-        System.out.println(map.get("course_name").equals("计算机4班"));
+                .eq("class_name", map.get("className")));
         log.info("获取某班所有学生{}",studentList);
         return Result.success(new PageInfo<>(studentList));
-    }
-
-    /**
-     * 根据学生学号获取学生信息
-     * @param id
-     * @return
-     */
-    @GetMapping("/getStuById")
-    public Result<Student> getStuById(String id){
-        Student student = studentMapper.selectOne(new QueryWrapper<Student>()
-                .eq("id", id));
-        log.info("根据学生学号获取学生信息{}",student);
-        return Result.success(student);
     }
 
     /**
