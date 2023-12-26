@@ -134,7 +134,6 @@
         <result property="userId" column="id"/>
         <result property="username" column="username"/>
         <result property="collegeName" column="college_name"/>
-        <!-- 添加其他属性映射 -->
     </resultMap>
 
 

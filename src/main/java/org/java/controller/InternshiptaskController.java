@@ -18,6 +18,7 @@ import org.java.mapper.UserMapper;
 import org.java.service.ConTaskService;
 import org.java.service.InternshiptaskService;
 import org.java.service.TeaTaskService;
+import org.java.utils.ExcelGeneratorUtil;
 import org.java.utils.resonse.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,8 @@ public class InternshiptaskController {
     private TeaTaskService teaTaskService;
     @Autowired
     private UserMapper userMapper;
-//    @Autowired
-//    private ExcelGeneratorUtil excelGeneratorUtil;
+    @Autowired
+    private ExcelGeneratorUtil excelGeneratorUtil;
 
 
     /**
@@ -216,7 +217,7 @@ public class InternshiptaskController {
      * @return
      */
     @PostMapping("/getUserData")
-    public Result<PageInfo<GetUserDataVo>> getUserData(@RequestBody GetUserDataDto getUserDataDto){
+    public Result<PageInfo<User>> getUserData(@RequestBody GetUserDataDto getUserDataDto){
         log.info("getUserData查询{}",getUserDataDto);
         return Result.success(teaTaskService.getUserData(getUserDataDto));
     }
@@ -317,26 +318,27 @@ public class InternshiptaskController {
      * @param taskId
      * @return
      */
-//    @GetMapping("/excelExport")
-//    public ResponseEntity<byte[]> exportExcel(Integer taskId) {
-//        log.info("导出Excel表格{}",taskId);
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-//        User user = securityUser.getUser();
-//        try {
-//            // 调用生成Excel的逻辑
-//            byte[] excelBytes = excelGeneratorUtil.generateExcel();
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx");
-//
-//            // 返回生成的Excel文件
-//            return ResponseEntity.ok().headers(headers).body(excelBytes);
-//        } catch (IOException e) {
-//            // 处理异常
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).body(null);
-//        }
-//    }
+    @GetMapping("/excelExport")
+    public ResponseEntity<byte[]> exportExcel(Integer taskId) {
+        log.info("导出Excel表格{}",taskId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        User user = securityUser.getUser();
+        List<String> teasByOneTask = internshiptaskService.findAllTeasByOneTask(taskId);
+        try {
+            // 调用生成Excel的逻辑
+            byte[] excelBytes = excelGeneratorUtil.generateExcel(teasByOneTask,taskId);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx");
+
+            // 返回生成的Excel文件
+            return ResponseEntity.ok().headers(headers).body(excelBytes);
+        } catch (IOException e) {
+            // 处理异常
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

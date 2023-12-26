@@ -17,6 +17,7 @@ import org.java.entity.vo.OutFileDataVo;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.InternshiptaskMapper;
 import org.java.mapper.TeaTaskMapper;
+import org.java.mapper.UserMapper;
 import org.java.service.InternshiptaskService;
 import org.java.utils.resonse.Result;
 import org.springframework.beans.BeanUtils;
@@ -27,10 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 程子
@@ -47,6 +46,8 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
     private ConTaskMapper conTaskMapper;
     @Autowired
     private TeaTaskMapper teaTaskMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public Integer getTaskTermByTaskId(Integer taskId) {
@@ -235,13 +236,25 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
     }
 
     // 查询一个任务的任教老师
-//    public List<String> findAllTeasByOneTask(Integer taskId){
-//        teaTaskMapper.selectList(new QueryWrapper<TeaTask>()
-//                            .eq("task_id",taskId)
-//                            .eq("mark",1)
-//                            .eq("mark",2))
-//
-//    }
+    @Override
+    public List<String> findAllTeasByOneTask(Integer taskId){
+        QueryWrapper<TeaTask> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("task_id", taskId)
+                .in("mark", Arrays.asList(1, 2));
+
+        List<TeaTask> teaTaskList = teaTaskMapper.selectList(queryWrapper);
+
+        // 获取 userId 列表
+        List<Integer> userIds = teaTaskList.stream()
+                .map(TeaTask::getUserId)
+                .toList();
+        // 获取对应的 usernames
+        List<String> usernames = userMapper.selectBatchIds(userIds)
+                .stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+        return usernames;
+    }
 }
 
 

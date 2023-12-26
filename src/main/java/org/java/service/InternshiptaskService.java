@@ -25,4 +25,6 @@ public interface InternshiptaskService extends IService<Internshiptask> {
     public PageInfo<EndTimeTaskVo> getTimeOutTask(int academicTerm, int pageNumber, int pageSize);
 
     public List<Internshiptask> getEndTasks();
+
+    public List<String> findAllTeasByOneTask(Integer taskId);
 }
