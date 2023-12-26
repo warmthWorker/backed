@@ -40,7 +40,7 @@ public class DocumentCategoryServiceImpl extends ServiceImpl<DocumentCategoryMap
 
 
     //创建类目
-    public boolean createCategory(Long outlineId, String newCategoryName) {
+    public Integer createCategory(Long outlineId, String newCategoryName) {
         // 查询大纲所在的类目
         DocumentCategory outlineCategory = categoryMapper.selectById(outlineId);
 
@@ -49,10 +49,11 @@ public class DocumentCategoryServiceImpl extends ServiceImpl<DocumentCategoryMap
             DocumentCategory newCategory = new DocumentCategory();
             newCategory.setCategoryName(newCategoryName);
             newCategory.setParentCategoryId(null); // 顶级类目，没有父目录
+            categoryMapper.insert(newCategory);
 
-            return categoryMapper.insert(newCategory) > 0;
+            return  newCategory.getCategoryId();
         } else {
-            return false;
+            return -1;
         }
     }
 }

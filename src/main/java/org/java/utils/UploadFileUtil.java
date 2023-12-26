@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,10 +28,11 @@ public class UploadFileUtil {
         // 获取文件名并进行中文编码转换
         String originalFilename = new String(Objects.requireNonNull(file.getOriginalFilename())
                 .getBytes("ISO-8859-1"), "UTF-8");
-        // 将中文字符串转换为字节数组，使用UTF-8编码
-//        byte[] chineseBytes = originalFilename.getBytes(StandardCharsets.UTF_8);
+
+        // 对文件名进行URL编码
+        String encodedFilename = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8);
         // 文件存储路径
-        String filePath = UPLOAD_DIR + originalFilename;
+        String filePath = UPLOAD_DIR + encodedFilename;
 
         // 保存文件到指定路径
         byte[] bytes = file.getBytes();

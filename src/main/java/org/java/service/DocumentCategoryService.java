@@ -14,5 +14,5 @@ public interface DocumentCategoryService extends IService<DocumentCategory> {
 
     public List<Document> getFiles(Long categoryId);
 
-    public boolean createCategory(Long outlineId, String newCategoryName);
+    public Integer createCategory(Long outlineId, String newCategoryName);
 }

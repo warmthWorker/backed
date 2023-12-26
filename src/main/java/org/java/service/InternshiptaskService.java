@@ -18,7 +18,7 @@ public interface InternshiptaskService extends IService<Internshiptask> {
 
     public PageInfo<ApplyTaskVo> getTasksByTerm(String courseName, int getTasksByTerm, int pageNumber, int pageSize);
 
-    public Internshiptask getSymbol(String courseCategory,Integer academicTerm,String className);
+    public Internshiptask getSymbol(String courseCategory,Integer academicTerm,String courseName);
 
     public long calculateTaskDuration (Integer taskId);
 

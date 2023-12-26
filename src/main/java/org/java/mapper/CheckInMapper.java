@@ -14,12 +14,12 @@ import java.util.List;
 public interface CheckInMapper extends BaseMapper<CheckIn> {
 
     List<CheckInStudentVo> getNoCheckInStudents(
-            @Param("courseName") String courseName,
+            @Param("className") String className,
             @Param("attendanceDate") Date attendanceDate
     );
 
     List<CheckInStudentVo> getCheckedInStudents(
-            @Param("courseName") String courseName,
+            @Param("className") String className,
             @Param("attendanceDate") Date attendanceDate
     );
 }
