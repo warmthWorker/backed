@@ -10,9 +10,9 @@
         SELECT s.* , c.status
         FROM student s
                  LEFT JOIN check_in c ON s.id = c.stu_id
-            AND s.course_name = #{courseName}
+            AND s.class_name = #{courseName}
             AND DATE(c.attendance_date) = DATE(#{attendanceDate})
-        WHERE c.stu_id IS NULL OR c.attendance_date IS NULL;
+        WHERE c.stu_id IS NULL OR c.attendance_date IS NULL
     </select>
 
     <!-- 获取某一天已经打卡的学生信息 -->
@@ -20,9 +20,9 @@
         SELECT s.*, c.status
         FROM student s
                  INNER JOIN check_in c ON s.id = c.stu_id
-            AND s.course_name = #{courseName}
+            AND s.class_name = #{courseName}
             AND DATE(c.attendance_date) = DATE(#{attendanceDate})
-        WHERE c.stu_id IS NOT NULL AND c.attendance_date IS NOT NULL;
+        WHERE c.stu_id IS NOT NULL AND c.attendance_date IS NOT NULL
     </select>
 
 

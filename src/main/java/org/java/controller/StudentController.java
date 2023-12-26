@@ -97,12 +97,12 @@ public class StudentController {
      * @param checkInStudentsDto
      * @return
      */
-    @GetMapping("/getNoCheckInStudents")
-    public Result<List<CheckInStudentVo>> getNoCheckInStudents(@RequestBody CheckInStudentsDto checkInStudentsDto){
+    @PostMapping("/getNoCheckInStudents")
+    public Result<PageInfo<CheckInStudentVo>> getNoCheckInStudents(@RequestBody CheckInStudentsDto checkInStudentsDto){
         log.info("获取某班某天的未打卡人信息{}",checkInStudentsDto);
 
         return Result.success(checkInService.getNoCheckedInStudents
-                (checkInStudentsDto.getCourseName(),checkInStudentsDto.getAttendanceDate()));
+                (checkInStudentsDto));
 
     }
     // 获取某班某天以打卡人信息
@@ -112,11 +112,11 @@ public class StudentController {
      * @param checkInStudentsDto
      * @return
      */
-    @GetMapping("/getCheckInStudents")
-    public Result<List<CheckInStudentVo>>  getCheckInStudents(@RequestBody CheckInStudentsDto checkInStudentsDto){
+    @PostMapping("/getCheckInStudents")
+    public Result<PageInfo<CheckInStudentVo>>  getCheckInStudents(@RequestBody CheckInStudentsDto checkInStudentsDto){
         log.info("获取某班某天以打卡人信息{}",checkInStudentsDto);
         return Result.success(checkInService.getCheckedInStudents
-                (checkInStudentsDto.getCourseName(),checkInStudentsDto.getAttendanceDate()));
+                (checkInStudentsDto));
     }
     /**
      * 查询某学生某天打卡记录

@@ -1,7 +1,9 @@
 package org.java.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import org.java.entity.dto.CheckInDto;
+import org.java.entity.dto.CheckInStudentsDto;
 import org.java.entity.pojo.CheckIn;
 import org.java.entity.vo.CheckInStudentVo;
 import org.java.entity.vo.CheckInVo;
@@ -20,7 +22,7 @@ public interface CheckInService extends IService<CheckIn> {
     public Integer getCheckInDays(Integer stuId, Integer taskId);
 
     public List<CheckIn> getCheckInRecords(Integer stuId, Integer taskId);
-    public List<CheckInStudentVo> getNoCheckedInStudents(String courseName, Date attendanceDate);
+    public PageInfo<CheckInStudentVo> getNoCheckedInStudents(CheckInStudentsDto checkInStudentsDto);
 
-    public List<CheckInStudentVo> getCheckedInStudents(String courseName, Date attendanceDate);
+    public PageInfo<CheckInStudentVo> getCheckedInStudents(CheckInStudentsDto checkInStudentsDto);
 }

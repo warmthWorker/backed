@@ -2,9 +2,12 @@ package org.java.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.java.entity.dto.CheckInDto;
+import org.java.entity.dto.CheckInStudentsDto;
 import org.java.entity.pojo.CheckIn;
 import org.java.entity.vo.CheckInStudentVo;
 import org.java.entity.vo.CheckInVo;
@@ -99,11 +102,19 @@ public class CheckInServiceImpl extends
         return checkInMapper.selectList(queryWrapper);
     }
 
-    public List<CheckInStudentVo> getCheckedInStudents(String courseName, Date attendanceDate){
-        return checkInMapper.getCheckedInStudents(courseName,attendanceDate);
+    public PageInfo<CheckInStudentVo> getCheckedInStudents(CheckInStudentsDto checkInStudentsDto){
+        PageHelper.startPage(checkInStudentsDto.getPageNumber(), checkInStudentsDto.getPageSize());
+        List<CheckInStudentVo> checkedInStudents = checkInMapper.getCheckedInStudents
+                (checkInStudentsDto.getCourseName(), checkInStudentsDto.getAttendanceDate());
+
+        return new PageInfo<>(checkedInStudents);
     }
 
-    public List<CheckInStudentVo> getNoCheckedInStudents(String courseName, Date attendanceDate){
-        return checkInMapper.getNoCheckInStudents(courseName,attendanceDate);
+    public PageInfo<CheckInStudentVo> getNoCheckedInStudents(CheckInStudentsDto checkInStudentsDto){
+        PageHelper.startPage(checkInStudentsDto.getPageNumber(), checkInStudentsDto.getPageSize());
+        List<CheckInStudentVo> noCheckInStudents = checkInMapper.getNoCheckInStudents
+                (checkInStudentsDto.getCourseName(), checkInStudentsDto.getAttendanceDate());
+
+        return new PageInfo<>(noCheckInStudents);
     }
 }

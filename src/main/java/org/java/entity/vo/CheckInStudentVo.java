@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class CheckInStudentVo {
     private String id;
     private String grade;
-    private String courseName;
+    private String className;
     private String name;
     private Integer status;
 }

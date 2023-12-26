@@ -299,7 +299,8 @@ public class InternshiptaskController {
         log.info("手动设置任务截止时间{}",getEndTaskTimeDto);
         UpdateWrapper<Internshiptask> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id",getEndTaskTimeDto.getTaskId())
-                    .set("task_deadline",getEndTaskTimeDto.getEndTime());
+                    .set("task_deadline",getEndTaskTimeDto.getEndTime())
+                    .set("status",2);
 
         if (internshiptaskService.update(null,updateWrapper)){
             return Result.success();
