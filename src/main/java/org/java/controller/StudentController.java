@@ -3,6 +3,8 @@ package org.java.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.java.entity.SecurityUser;
 import org.java.entity.dto.CheckInDto;
@@ -52,19 +54,22 @@ public class StudentController {
     private TeaTaskService teaTaskService;
 
 
-
-
     /**
      * 获取某班所有学生
-     * @param className
+     * @param map
      * @return
      */
     @GetMapping("/getAllStuByClass")
-    public Result<List<Student>> getAllStuByClass(String className){
+    public Result<PageInfo<Student>> getAllStuByClass(@RequestParam Map<String, String> map){
+//         开启分页PageNumber PageSize
+        PageHelper.startPage(Integer.parseInt(map.get("pageNumber")),
+                            Integer.parseInt(map.get("pageSize")));
+
         List<Student> studentList = studentMapper.selectList(new QueryWrapper<Student>()
-                .eq("course_name", className));
+                .eq("course_name", map.get("course_name")));
+        System.out.println(map.get("course_name").equals("计算机4班"));
         log.info("获取某班所有学生{}",studentList);
-        return Result.success(studentList);
+        return Result.success(new PageInfo<>(studentList));
     }
 
     /**

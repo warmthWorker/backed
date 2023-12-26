@@ -21,10 +21,14 @@ import org.java.service.TeaTaskService;
 import org.java.utils.resonse.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +45,8 @@ public class InternshiptaskController {
     private TeaTaskService teaTaskService;
     @Autowired
     private UserMapper userMapper;
+//    @Autowired
+//    private ExcelGeneratorUtil excelGeneratorUtil;
 
 
     /**
@@ -194,11 +200,12 @@ public class InternshiptaskController {
      */
     @GetMapping("/getTodoTask")
     public Result<List<EndTimeTaskVo>> getTodoTask(){
+
         // 查询条件还要有任务只能在进行时才能查到 status 1
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
-
+        log.info("教师获取自己负责的班级{}",user);
         return Result.success(teaTaskService.selectInternshipTaskByUserId(user.getId()));
     }
 
@@ -208,8 +215,9 @@ public class InternshiptaskController {
      * @param getUserDataDto
      * @return
      */
-    @GetMapping("/getUserData")
+    @PostMapping("/getUserData")
     public Result<PageInfo<GetUserDataVo>> getUserData(@RequestBody GetUserDataDto getUserDataDto){
+        log.info("getUserData查询{}",getUserDataDto);
         return Result.success(teaTaskService.getUserData(getUserDataDto));
     }
     /**
@@ -224,17 +232,19 @@ public class InternshiptaskController {
         String teaId = map.get("teaId");
         int taskIdI ;
         int teaIdI ;
-
         if (taskId.isEmpty() || teaId.isEmpty()){
             return Result.error("输入数据不完整");
         }
+
         taskIdI = Integer.parseInt(taskId);
         teaIdI = Integer.parseInt(teaId);
+        Integer academicTerm = internshiptaskService.getById(taskIdI).getAcademicTerm();
         TeaTask teaTask = new TeaTask();
         teaTask.setMark(2); // 其他教师
         teaTask.setTaskId(taskIdI);
         teaTask.setUserId(teaIdI);
         teaTask.setTime(new Date());
+        teaTask.setAcademicTerm(academicTerm);
         if (teaTaskService.intoTask(teaTask)){
             return Result.success();
         }
@@ -263,7 +273,6 @@ public class InternshiptaskController {
         return Result.success(historyByName);
     }
 
-
     /**
      * 模糊搜索教师名称
      * @return
@@ -274,8 +283,6 @@ public class InternshiptaskController {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("username", username);
 
-
-
         List<User> userList = userMapper.selectList(queryWrapper);
         return Result.success(userList);
     }
@@ -285,8 +292,8 @@ public class InternshiptaskController {
      * @param getEndTaskTimeDto
      * @return
      */
-    @GetMapping("/getEndTaskTime")
-    public Result getEndTaskTime(@RequestBody GetEndTaskTimeDto getEndTaskTimeDto){
+    @PostMapping("/setEndTaskTime")
+    public Result setEndTaskTime(@RequestBody GetEndTaskTimeDto getEndTaskTimeDto){
         log.info("手动设置任务截止时间{}",getEndTaskTimeDto);
         UpdateWrapper<Internshiptask> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id",getEndTaskTimeDto.getTaskId())
@@ -298,4 +305,38 @@ public class InternshiptaskController {
         return Result.error("操作失败");
     }
 
+    // 教师获取任教已经结束的任务
+    @GetMapping("/getEndTasks")
+    public Result<List<Internshiptask>> getEndTasks(){
+        log.info("教师获取任教已经结束的任务");
+        return Result.success(internshiptaskService.getEndTasks());
+    }
+
+    /**
+     * 导出Excel表格
+     * @param taskId
+     * @return
+     */
+//    @GetMapping("/excelExport")
+//    public ResponseEntity<byte[]> exportExcel(Integer taskId) {
+//        log.info("导出Excel表格{}",taskId);
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+//        User user = securityUser.getUser();
+//        try {
+//            // 调用生成Excel的逻辑
+//            byte[] excelBytes = excelGeneratorUtil.generateExcel();
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx");
+//
+//            // 返回生成的Excel文件
+//            return ResponseEntity.ok().headers(headers).body(excelBytes);
+//        } catch (IOException e) {
+//            // 处理异常
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body(null);
+//        }
+//    }
 }

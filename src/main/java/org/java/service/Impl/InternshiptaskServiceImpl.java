@@ -13,6 +13,7 @@ import org.java.entity.pojo.TeaTask;
 import org.java.entity.pojo.User;
 import org.java.entity.vo.ApplyTaskVo;
 import org.java.entity.vo.EndTimeTaskVo;
+import org.java.entity.vo.OutFileDataVo;
 import org.java.mapper.ConTaskMapper;
 import org.java.mapper.InternshiptaskMapper;
 import org.java.mapper.TeaTaskMapper;
@@ -220,6 +221,27 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
         // 包括最后一天，在结果上加1
         return days + 1;
     }
+
+    @Override
+    // 教师获取任教已经结束的任务
+    public List<Internshiptask> getEndTasks(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        User user = securityUser.getUser();
+
+        List<Internshiptask> outFileDataVos = mapper.selectInternshipTaskByUserId(user.getId());
+        log.info("教师获取任教已经结束的任务{}",outFileDataVos);
+        return outFileDataVos;
+    }
+
+    // 查询一个任务的任教老师
+//    public List<String> findAllTeasByOneTask(Integer taskId){
+//        teaTaskMapper.selectList(new QueryWrapper<TeaTask>()
+//                            .eq("task_id",taskId)
+//                            .eq("mark",1)
+//                            .eq("mark",2))
+//
+//    }
 }
 
 

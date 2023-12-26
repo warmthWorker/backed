@@ -7,6 +7,8 @@ import org.java.entity.vo.ApplyTaskVo;
 import org.java.entity.vo.EndTimeTaskVo;
 import org.java.utils.resonse.Result;
 
+import java.util.List;
+
 public interface InternshiptaskService extends IService<Internshiptask> {
 
 
@@ -21,4 +23,6 @@ public interface InternshiptaskService extends IService<Internshiptask> {
     public long calculateTaskDuration (Integer taskId);
 
     public PageInfo<EndTimeTaskVo> getTimeOutTask(int academicTerm, int pageNumber, int pageSize);
+
+    public List<Internshiptask> getEndTasks();
 }

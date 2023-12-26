@@ -27,6 +27,27 @@
             <result property="courseCategory" column="course_category" jdbcType="VARCHAR"/>
         </resultMap>
 
+    <!-- resultMap 部分 -->
+    <resultMap id="InternshipTaskResultMap" type="org.java.entity.vo.OutFileDataVo">
+        <result column="courseCode" property="courseCode" />
+        <result column="courseName" property="courseName" />
+        <result column="courseCategory" property="courseCategory" />
+        <result column="className" property="className" />
+        <result column="creditHours" property="creditHours" />
+        <result column="studentCount" property="studentCount" />
+        <result column="username" property="teacher" />
+    </resultMap>
+
+    <!-- 查询 internshiptask 表中的数据 -->
+    <select id="selectInternshipTaskByUserId" >
+        SELECT
+            it.*
+        FROM internshiptask it
+                 JOIN tea_task tt ON it.task_id = tt.task_id
+        WHERE tt.user_id = #{userId} AND tt.mark IN (1, 2) AND it.status = 2
+    </select>
+
+
 
 
 

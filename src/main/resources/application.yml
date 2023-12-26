@@ -7,7 +7,7 @@ spring:
     password: root
   mybatis:
     configuration:
-      # MyBatis 配置
+      # MyBatis 配置 驼峰命名
       map-underscore-to-camel-case: true
     # PageHelper 插件配置
     pagehelper:

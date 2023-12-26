@@ -3,6 +3,7 @@ package org.java.service.Impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.java.entity.dto.GetUserDataDto;
 import org.java.entity.pojo.TeaTask;
 import org.java.entity.vo.EndTimeTaskVo;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 
+@Slf4j
 @Service
 public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> implements TeaTaskService {
     @Autowired
@@ -77,6 +79,7 @@ public class TeaTaskServiceImpl extends ServiceImpl<TeaTaskMapper, TeaTask> impl
     }
     @Override
     public PageInfo<GetUserDataVo> getUserData(GetUserDataDto getUserDataDto){
+
         // 开启分页
         PageHelper.startPage(getUserDataDto.getPageNumber(), getUserDataDto.getPageSize());
         List<GetUserDataVo> userDataVos = teaTaskMapper.getUserData(getUserDataDto.getUsername());
