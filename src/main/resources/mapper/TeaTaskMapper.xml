@@ -127,7 +127,7 @@
         WHERE
             tt.user_id = #{userId} AND
             tt.mark IN (1, 2) AND
-            it.status = 1;
+            it.status = 1
     </select>
 
     <resultMap id="getUserdata" type="org.java.entity.vo.GetUserDataVo">

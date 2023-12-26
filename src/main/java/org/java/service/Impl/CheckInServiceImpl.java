@@ -105,7 +105,7 @@ public class CheckInServiceImpl extends
     public PageInfo<CheckInStudentVo> getCheckedInStudents(CheckInStudentsDto checkInStudentsDto){
         PageHelper.startPage(checkInStudentsDto.getPageNumber(), checkInStudentsDto.getPageSize());
         List<CheckInStudentVo> checkedInStudents = checkInMapper.getCheckedInStudents
-                (checkInStudentsDto.getCourseName(), checkInStudentsDto.getAttendanceDate());
+                (checkInStudentsDto.getClassName(), checkInStudentsDto.getAttendanceDate());
 
         return new PageInfo<>(checkedInStudents);
     }
@@ -113,7 +113,7 @@ public class CheckInServiceImpl extends
     public PageInfo<CheckInStudentVo> getNoCheckedInStudents(CheckInStudentsDto checkInStudentsDto){
         PageHelper.startPage(checkInStudentsDto.getPageNumber(), checkInStudentsDto.getPageSize());
         List<CheckInStudentVo> noCheckInStudents = checkInMapper.getNoCheckInStudents
-                (checkInStudentsDto.getCourseName(), checkInStudentsDto.getAttendanceDate());
+                (checkInStudentsDto.getClassName(), checkInStudentsDto.getAttendanceDate());
 
         return new PageInfo<>(noCheckInStudents);
     }
