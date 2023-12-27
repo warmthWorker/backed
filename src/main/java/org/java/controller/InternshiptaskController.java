@@ -4,6 +4,8 @@ package org.java.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageInfo;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.java.entity.SecurityUser;
 import org.java.entity.dto.GetEndTaskTimeDto;
@@ -19,23 +21,24 @@ import org.java.service.ConTaskService;
 import org.java.service.InternshiptaskService;
 import org.java.service.TeaTaskService;
 import org.java.utils.ExcelGeneratorUtil;
+import org.java.utils.ExcelUtil;
+import org.java.utils.WorkloadCalculatorUtil;
 import org.java.utils.resonse.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.OperationsException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/task")
@@ -50,6 +53,8 @@ public class InternshiptaskController {
     private UserMapper userMapper;
     @Autowired
     private ExcelGeneratorUtil excelGeneratorUtil;
+    @Autowired
+    private WorkloadCalculatorUtil workloadCalculatorUtil;
 
 
     /**
@@ -334,7 +339,7 @@ public class InternshiptaskController {
             byte[] excelBytes = excelGeneratorUtil.generateExcel(teasByOneTask, taskId,user.getId());
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 //            headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx", StandardCharsets.UTF_8);
             headers.setContentDispositionFormData("attachment", "任务工作量分配表.xlsx; charset=UTF-8");
 
@@ -345,5 +350,34 @@ public class InternshiptaskController {
             e.printStackTrace();
             return ResponseEntity.status(500).body(null);
         }
+    }
+    @GetMapping("/export")
+    public Result<OutFileDataVo> export(HttpServletRequest request, HttpServletResponse response) throws OperationsException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        User user = securityUser.getUser();
+//        List<SysUserDetail> list = adminService.exportAdmin();
+        ArrayList<OutFileDataVo> outFileDataVos = new ArrayList<>();
+        OutFileDataVo outFileDataVo = new OutFileDataVo();
+        Integer taskId = Integer.parseInt(request.getParameter("taskId"));
+        Internshiptask internshiptask = internshiptaskService.getById(taskId);
+
+        outFileDataVo.setClassName(internshiptask.getClassName());//课程名称
+        outFileDataVo.setTaskId(internshiptask.getTaskId());
+        outFileDataVo.setTeacher(userMapper.selectById(user.getId()).getUsername());//负责教师
+        outFileDataVo.setCourseName(internshiptask.getCourseName());//课程名称
+        outFileDataVo.setCourseCode(internshiptask.getCourseCode());//课程代码
+        outFileDataVo.setCourseCategory(internshiptask.getCourseCategory());//课程性质
+        outFileDataVo.setCreditHours(internshiptask.getCreditHours());//学分
+        outFileDataVo.setCreditScore((int) (internshiptaskService.calculateTaskDuration(taskId) * 4));//学时
+        outFileDataVo.setClassName(internshiptask.getClassName());//合班信息
+        outFileDataVo.setTotalWordTime((int) (internshiptaskService.calculateTaskDuration(taskId) * 4));
+
+        double totalWorkload = workloadCalculatorUtil.calculateWorkload(internshiptask);
+        outFileDataVo.setPersonalWork(totalWorkload);
+
+        ExcelUtil<OutFileDataVo> util = new ExcelUtil<OutFileDataVo>(OutFileDataVo.class);
+        outFileDataVos.add(outFileDataVo);
+        return util.exportExcel(outFileDataVos, "任务工作量分配表",request,response);
     }
 }

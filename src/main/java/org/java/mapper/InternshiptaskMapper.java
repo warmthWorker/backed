@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.java.entity.pojo.Internshiptask;
-import org.java.entity.vo.OutFileDataVo;
+
 
 import java.util.List;
 
