@@ -17,13 +17,13 @@ public interface InternshiptaskService extends IService<Internshiptask> {
     public boolean addTask(Internshiptask internshiptask);
 
 
-    public PageInfo<ApplyTaskVo> getTasksByTerm(String courseName, int getTasksByTerm, int pageNumber, int pageSize);
+    public PageInfo<Internshiptask> getTasksByTerm(String courseName, int getTasksByTerm, int pageNumber, int pageSize);
 
     public Internshiptask getSymbol(String courseCategory,Integer academicTerm,String courseName);
 
     public long calculateTaskDuration (Integer taskId);
 
-    public HashMap<String, Object> getTimeOutTask(int academicTerm, int pageNumber, int pageSize);
+    public PageInfo<Internshiptask> getTimeOutTask(int academicTerm, int pageNumber, int pageSize);
 
     public List<Internshiptask> getEndTasks();
 

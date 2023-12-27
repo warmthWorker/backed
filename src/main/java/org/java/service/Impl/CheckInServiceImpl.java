@@ -112,6 +112,7 @@ public class CheckInServiceImpl extends
 
     public PageInfo<CheckInStudentVo> getNoCheckedInStudents(CheckInStudentsDto checkInStudentsDto){
         PageHelper.startPage(checkInStudentsDto.getPageNumber(), checkInStudentsDto.getPageSize());
+
         List<CheckInStudentVo> noCheckInStudents = checkInMapper.getNoCheckInStudents
                 (checkInStudentsDto.getClassName(), checkInStudentsDto.getAttendanceDate());
 

@@ -104,7 +104,7 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
      * @return
      */
     @Override
-    public PageInfo<ApplyTaskVo> getTasksByTerm(String courseName,int academicTerm, int pageNumber, int pageSize) {
+    public PageInfo<Internshiptask> getTasksByTerm(String courseName,int academicTerm, int pageNumber, int pageSize) {
         // 开启分页
         PageHelper.startPage(pageNumber, pageSize);
         List<ApplyTaskVo> applyTaskVos = new ArrayList<>();
@@ -113,13 +113,13 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
             //先给模糊查询
             List<Internshiptask> course_names = mapper.selectList(new QueryWrapper<Internshiptask>()
                     .like("course_name", courseName));
-            for (Internshiptask course_name : course_names) {
-                ApplyTaskVo applyTaskVo = new ApplyTaskVo();
-                BeanUtils.copyProperties(course_name, applyTaskVo);
-                applyTaskVos.add(applyTaskVo);
-            }
+//            for (Internshiptask course_name : course_names) {
+//                ApplyTaskVo applyTaskVo = new ApplyTaskVo();
+//                BeanUtils.copyProperties(course_name, applyTaskVo);
+//                applyTaskVos.add(applyTaskVo);
+//            }
             // 获取分页信息
-            return new PageInfo<>(applyTaskVos);
+            return new PageInfo<>(course_names);
         }
         //查询当前学期未开始的任务且且当前时间小于截止时间
         List<Internshiptask> selectList = mapper.selectList(new QueryWrapper<Internshiptask>()
@@ -149,18 +149,18 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 }
             }
             if(flag) break;
-            ApplyTaskVo applyTaskVo = new ApplyTaskVo();
-            BeanUtils.copyProperties(internshiptask, applyTaskVo);
-            applyTaskVos.add(applyTaskVo);
+//            ApplyTaskVo applyTaskVo = new ApplyTaskVo();
+//            BeanUtils.copyProperties(internshiptask, applyTaskVo);
+//            applyTaskVos.add(applyTaskVo);
         }
         log.info("applyTaskVos{}", applyTaskVos);
 
         // 返回分页结果
-        return new PageInfo<>(applyTaskVos);
+        return new PageInfo<>(selectList);
     }
 
     @Override
-    public HashMap<String, Object> getTimeOutTask(int academicTerm, int pageNumber, int pageSize){
+    public PageInfo<Internshiptask> getTimeOutTask(int academicTerm, int pageNumber, int pageSize){
         // 开启分页
         PageHelper.startPage(pageNumber, pageSize);
         //查询当前学期未开始的任务且且当前时间小于截止时间
@@ -168,22 +168,22 @@ public class InternshiptaskServiceImpl extends ServiceImpl<InternshiptaskMapper,
                 .eq("academic_term", academicTerm)
                 .eq("status",0)
                 .le("application_deadline", new Date()));
-        PageInfo<Internshiptask> internshiptaskPageInfo = new PageInfo<>(selectList);
+//        PageInfo<Internshiptask> internshiptaskPageInfo = new PageInfo<>(selectList);
 
         log.info("查询当前学期截至时间已经过了的任务{}", selectList);
-        ArrayList<EndTimeTaskVo> timeTaskVos = new ArrayList<>();
-        for (Internshiptask list : selectList) {
-            EndTimeTaskVo endTimeTaskVo = new EndTimeTaskVo();
-            BeanUtils.copyProperties(list, endTimeTaskVo);
-            timeTaskVos.add(endTimeTaskVo);
-        }
-        HashMap<String, Object> hashMap = new HashMap<>();
-        PageInfo<EndTimeTaskVo> endTimeTaskVoPageInfo = new PageInfo<>(timeTaskVos);
+//        ArrayList<EndTimeTaskVo> timeTaskVos = new ArrayList<>();
+//        for (Internshiptask list : selectList) {
+//            EndTimeTaskVo endTimeTaskVo = new EndTimeTaskVo();
+//            BeanUtils.copyProperties(list, endTimeTaskVo);
+//            timeTaskVos.add(endTimeTaskVo);
+//        }
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        PageInfo<EndTimeTaskVo> endTimeTaskVoPageInfo = new PageInfo<>(timeTaskVos);
         // 获取分页信息
-        BeanUtils.copyProperties(internshiptaskPageInfo, endTimeTaskVoPageInfo);
-        hashMap.put("page",internshiptaskPageInfo);
+//        BeanUtils.copyProperties(internshiptaskPageInfo, endTimeTaskVoPageInfo);
+//        hashMap.put("page",internshiptaskPageInfo);
 
-        return hashMap;
+        return new PageInfo<>(selectList);
     }
 
 
