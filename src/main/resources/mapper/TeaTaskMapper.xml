@@ -59,6 +59,7 @@
 
     <resultMap id="TeaTaskInfoResultMap" type="org.java.entity.vo.TeaTaskVo">
         <result property="teaTaskId" column="id"/>
+        <result property="teaId" column="user_id"/>
         <result property="username" column="username"/>
         <result property="collegeName" column="college_name"/>
         <result property="mark" column="mark"/>
@@ -72,6 +73,7 @@
     <select id="findTeaTaskInfo" resultMap="TeaTaskInfoResultMap">
         SELECT
             tt.id,
+            tt.user_id,
             u.username,
             u.college_name,
             tt.mark,

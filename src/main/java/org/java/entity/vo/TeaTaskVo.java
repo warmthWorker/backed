@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TeaTaskVo {
     private Integer teaTaskId;
+    private Integer teaId;
     private String username;
     private String collegeName;
     private int mark;
